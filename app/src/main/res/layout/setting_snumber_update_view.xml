@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:weightSum="6"
+        android:orientation="vertical">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:gravity="center"
+            android:layout_weight="5">
+
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/img_logo_big"
+                android:adjustViewBounds="true"
+                android:layout_gravity="center"/>
+
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/setting_snumber_update_edt"
+            android:layout_margin="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.5"
+            android:descendantFocusability="beforeDescendants"
+            android:focusableInTouchMode="true"
+            android:background="@drawable/btn_white_medium_n"
+            android:gravity="center"
+            android:imeOptions="actionDone"
+            android:maxLength="9"
+            android:maxLines="1"
+            android:textColor="@color/colorGray"
+            android:textColorHint="@color/bolder_text"
+            android:textSize="18sp"
+            android:inputType="text"
+            android:textStyle="bold" />
+
+
+        <TextView
+            android:id="@+id/setting_update_done_tv"
+            android:layout_weight="0.5"
+            android:layout_margin="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:gravity="center"
+            android:background="@drawable/btn_orange_big_n"
+            android:text="@string/btn_done"
+            android:textColor="@color/colorWhite"
+            android:hint="@string/btn_done"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+</LinearLayout>

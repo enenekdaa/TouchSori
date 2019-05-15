@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/white">
+
+
+        <EditText
+            android:id="@+id/serach_edt"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toLeftOf="@+id/toolbar_search_rl"
+            android:visibility="gone"
+            android:maxLines="1"
+            android:hint="이름"
+            android:inputType="text"
+            style="@style/EditTextTheme"
+            android:drawableBottom="@color/bolder_text"
+            android:layout_margin="5dp"/>
+
+        <FrameLayout
+            android:id="@+id/toolbar_search_fl"
+            android:layout_width="match_parent"
+            android:visibility="visible"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:id="@+id/rl_custom_toolbar_back"
+                android:layout_width="?attr/actionBarSize"
+                android:layout_height="?attr/actionBarSize"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/iv_custom_toolbar_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/ico_back_s" />
+            </RelativeLayout>
+
+            <TextView
+                android:maxLines="1"
+                android:id="@+id/tv_custom_toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_centerInParent="true"
+                android:textSize="18sp"
+                android:textColor="@color/text_color"
+                android:text="title"/>
+
+        </FrameLayout>
+
+        <RelativeLayout
+            android:id="@+id/toolbar_search_rl"
+            android:layout_width="?attr/actionBarSize"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_alignParentRight="true"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/toolbar_search_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:src="@drawable/ico_search_n" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </android.support.v7.widget.RecyclerView>
+
+</LinearLayout>

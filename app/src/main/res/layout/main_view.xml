@@ -1,0 +1,139 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_rl"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:layout_gravity="center"
+    android:gravity="center">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="bottom"
+            android:orientation="vertical"
+            android:layout_marginTop="15dp">
+
+            <ImageView
+                android:id="@+id/main_img"
+                android:layout_width="120dp"
+                android:layout_height="185dp"
+                android:adjustViewBounds="true"
+                android:layout_gravity="center"
+                android:src="@drawable/img_logo_medium" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="bottom"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:visibility="visible"
+                    android:orientation="horizontal">
+
+                    <!-- 내번호 입력 박스 -->
+                    <EditText
+                        android:id="@+id/main_number_edt"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:descendantFocusability="beforeDescendants"
+                        android:focusableInTouchMode="true"
+                        android:background="@drawable/btn_white_medium_n"
+                        android:gravity="center"
+                        android:imeOptions="actionNext"
+                        android:maxLength="11"
+                        android:maxLines="1"
+                        android:textColor="@color/colorGray"
+                        android:textColorHint="@color/bolder_text"
+                        android:textSize="18sp"
+                        android:inputType="number"
+                        android:hint="@string/phone_number_insert"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <!-- 시리얼 번호 입력 박스 -->
+                    <EditText
+                        android:id="@+id/main_snumber_edt"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:descendantFocusability="beforeDescendants"
+                        android:focusableInTouchMode="true"
+                        android:background="@drawable/btn_white_medium_n"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:maxLength="9"
+                        android:maxLines="1"
+                        android:textColor="@color/bolder_text"
+                        android:hint="@string/sireal_number_insert"
+                        android:textColorHint="@color/bolder_text"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <!-- 입력 완료 버튼 -->
+                    <TextView
+                        android:id="@+id/main_done_tv"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:gravity="center"
+                        android:background="@drawable/btn_orange_big_n"
+                        android:text="@string/btn_done"
+                        android:textColor="@color/colorWhite"
+                        android:hint="@string/btn_done"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <!-- 개인정보 취급 방침 -->
+                    <TextView
+                        android:id="@+id/main_policy_tv"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="15dp"
+                        android:clickable="true"
+                        android:gravity="center_horizontal"
+                        android:text="@string/policy"
+                        android:textColor="@color/text_color"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</RelativeLayout>

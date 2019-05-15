@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.sori.touchsori.utill.CustomToolbar android:id="@+id/setting_toolbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:layout_margin="10dp"
+            android:src="@drawable/img_logo_medium" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/setting_title"
+            android:layout_gravity="center"/>
+    </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/setting_snumber_ll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="15dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/btn_white_medium_n"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/setting_sNumber"
+                android:layout_gravity="center"
+                android:textColor="@color/bolder_text"
+                android:layout_margin="5dp"/>
+
+            <TextView
+                android:id="@+id/setting_snumber_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="value"
+                android:layout_gravity="center"
+                android:layout_margin="5dp"/>
+
+        </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/setting_country_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="15dp"
+        android:layout_margin="10dp"
+        android:visibility="gone"
+        android:background="@drawable/border_edittext_white"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/setting_country"
+            android:layout_gravity="center"
+            android:textColor="@color/bolder_text"
+            android:layout_margin="5dp"/>
+
+        <TextView
+            android:id="@+id/setting_country_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
+            android:text="value"/>
+
+    </LinearLayout>
+
+</LinearLayout>

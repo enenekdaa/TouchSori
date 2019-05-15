@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.sori.touchsori.utill.CustomToolbar
+        android:id="@+id/policy_toolbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+
+    <ScrollView
+        android:layout_weight="1"
+        android:id="@+id/policy_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/policy_toolbar"
+        android:fillViewport="true">
+        <LinearLayout
+            android:id="@+id/policy_ll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/policy_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:textSize="16dp"
+                android:lineSpacingExtra="15dp"
+                android:text="@string/text1"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/policy_done_tv"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@drawable/btn_white_medium_n"
+        android:gravity="center"
+        android:layout_margin="20dp"
+        android:maxLines="1"
+        android:textColor="@color/colorGray"
+        android:textColorHint="@color/bolder_text"
+        android:textSize="18sp"
+        android:hint="@string/ok"
+        android:textStyle="bold" />
+
+</LinearLayout>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:background="@color/white">
+
+
+    <FrameLayout
+        android:id="@+id/dialog_fl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <LinearLayout
+            android:id="@+id/dialog_tv_ll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:id="@+id/serach_dialog_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_gravity="center"
+                android:padding="15dp"
+                android:text="@string/setting_sos_delete"/>
+        </LinearLayout>
+
+    </FrameLayout>
+
+
+
+    <LinearLayout
+
+        android:id="@+id/dialog_bottomm_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/dialog_fl"
+        android:layout_marginTop="15dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/dialog_no_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="15dp"
+            android:gravity="center"
+            android:background="@drawable/border_gray"
+            android:textColor="@color/bolder_text"
+            android:text="취소"/>
+
+        <TextView
+            android:id="@+id/dialog_ok_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="15dp"
+            android:gravity="center"
+            android:background="@drawable/border_gray"
+            android:textColor="@color/bolder_text"
+            android:text="삭제"/>
+
+
+    </LinearLayout>
+
+</RelativeLayout>

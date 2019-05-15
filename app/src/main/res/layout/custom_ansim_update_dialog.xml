@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white">
+
+
+    <LinearLayout
+        android:id="@+id/ansim_dialog_time_ll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/ansim_dialog_start_time_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:layout_gravity="center"
+            android:padding="15dp"
+            android:textColor="@color/bolder_text"
+            android:background="@drawable/border_edittext_white"
+            android:text="출발시간 설정"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="10dp"
+            android:text="~"/>
+
+        <TextView
+            android:id="@+id/ansim_dialog_end_time_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="15dp"
+            android:textSize="14sp"
+            android:textColor="@color/bolder_text"
+            android:background="@drawable/border_edittext_white"
+            android:text="도착시간 설정"/>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/dialog_checkbox2_rl"
+        android:layout_width="wrap_content"
+        android:layout_margin="20dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ansim_dialog_time_ll"
+        android:layout_centerHorizontal="true"
+        android:orientation="vertical">
+
+        <CheckBox
+            android:id="@+id/dialog_cb_24"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:buttonTint="@color/bolder_text"
+            android:layout_margin="5dp"
+            android:text="24시간" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="14sp"
+            android:layout_margin="5dp"
+            android:text="@string/ansim_update_title" />
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+
+        android:id="@+id/dialog_bottomm_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/dialog_checkbox2_rl"
+        android:layout_marginTop="15dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/dialog_no_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="15dp"
+            android:gravity="center"
+            android:background="@drawable/border_gray"
+            android:textColor="@color/bolder_text"
+            android:text="취소"/>
+
+        <TextView
+            android:id="@+id/dialog_ok_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="15dp"
+            android:gravity="center"
+            android:background="@drawable/border_gray"
+            android:textColor="@color/bolder_text"
+            android:text="저장"/>
+
+
+    </LinearLayout>
+
+
+
+
+</RelativeLayout>

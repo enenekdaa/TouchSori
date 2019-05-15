@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="10dp">
+
+    <LinearLayout
+        android:id="@+id/serach_adapter_ll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <TextView
+
+            android:id="@+id/serach_adapter_icon_img"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center_vertical"
+            android:text="user"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:background="@drawable/box_check_circle"
+            android:layout_margin="15dp"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20dp"
+                android:layout_gravity="center_vertical"
+                android:text="이름"
+                android:layout_margin="5dp"
+                android:id="@+id/search_adapter_name_tv"/>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15dp"
+                android:layout_gravity="center_vertical"
+                android:text="번호"
+                android:layout_margin="5dp"
+                android:id="@+id/search_adapter_number_tv"/>
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+    <View android:layout_width="match_parent" android:layout_height="1dp"
+        android:background="@color/low_gray"/>
+</android.support.v7.widget.CardView>

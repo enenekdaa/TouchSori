@@ -1,0 +1,17 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/activity_intro_rl_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:layout_gravity="center"
+    android:gravity="center">
+
+        <ImageView
+            android:id="@+id/intro_img"
+            android:layout_width="120dp"
+            android:layout_height="185dp"
+            android:src="@drawable/img_logo_big"
+            android:adjustViewBounds="true"/>
+
+</RelativeLayout>
