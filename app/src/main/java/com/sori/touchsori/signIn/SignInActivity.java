@@ -30,6 +30,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.sori.touchsori.intro.IntroActivity.firstLogin;
+
 public class SignInActivity extends BaseActivity implements View.OnClickListener {
 
     private TextView mainPolicyTv;
@@ -167,7 +169,6 @@ public class SignInActivity extends BaseActivity implements View.OnClickListener
             deviceObj.addProperty("serialNo", sNumber);
             deviceObj.addProperty("phoneNo", pNumber);
             utils.setDeviceInfo(deviceObj.toString());
-            touchSori.requestSaveSerialNumber(sNumber);
             jsonObject.put("userId", deviceObj.get("username").getAsString());
             jsonObject.put("passwd", deviceObj.get("password").getAsString());
 
@@ -225,11 +226,15 @@ public class SignInActivity extends BaseActivity implements View.OnClickListener
                     String message;
                     if (response.isSuccessful()) {
                         String result = response.body().getAuthorization();
+
+                        deviceObj.addProperty("deviceId" , response.body().getDeviceId());
+                        deviceObj.addProperty("role" , response.body().getRole());
+                        deviceObj.addProperty("uid" , response.body().getUid());
+
+                        utils.setDeviceInfo(deviceObj.toString());
+                        utils.setDeviceID(deviceObj.get("deviceId").getAsString());
                         utils.saveLoginToken(result);
-
-                        Intent intent = new Intent(SignInActivity.this, MainActivity.class);
-                        startActivity(intent);
-
+                        firstLogin = true;
                         finish();
                     } else {
 

@@ -58,6 +58,7 @@ import static com.sori.touchsori.utill.Define.URL_SERIAL;
 public class IntroActivity extends BaseActivity {
 
     private static final String TAG = IntroActivity.class.getSimpleName();
+    public static boolean firstLogin = false;
     ImageView introImg;
 
     TelephonyManager tm;
@@ -82,6 +83,14 @@ public class IntroActivity extends BaseActivity {
         if (soriApplication.checkPermissionAll(this)) {
 
             initView();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (firstLogin) {
+            serialRegist();
         }
     }
 
@@ -123,7 +132,7 @@ public class IntroActivity extends BaseActivity {
         //  deviceObj.addProperty("phoneNo" , phoneNumber);
         deviceObj.addProperty("deviceName" , Build.DISPLAY);
         deviceObj.addProperty("maker" , Build.MANUFACTURER);
-        deviceObj.addProperty("imei" ,"354869090589003");
+        deviceObj.addProperty("imei" ,"355239080979466");
         //  deviceObj.addProperty("imei" , tm.getDeviceId());
         deviceObj.addProperty("version" , tm.getDeviceSoftwareVersion());
         deviceObj.addProperty("iccid" , "iccid" );
@@ -204,7 +213,7 @@ public class IntroActivity extends BaseActivity {
     private void userStateApi() {
         JSONObject jsonObject = new JSONObject();
         try {
-        //    jsonObject.put("username", utils.stringHash(deviceObj.get("username").getAsString()));
+           // jsonObject.put("username", utils.stringHash(deviceObj.get("username").getAsString()));
             jsonObject.put("username", deviceObj.get("username").getAsString());
             jsonObject.put("password",  deviceObj.get("password").getAsString());
 
@@ -258,7 +267,7 @@ public class IntroActivity extends BaseActivity {
         finish();
     }
 
-    private void serialRegist() {
+    public void serialRegist() {
         // 시리얼 정보 저장 요청
         Thread requestInsertSerialThread = new RequestInsertSerialThread();
         requestInsertSerialThread.setPriority(Thread.MAX_PRIORITY);
@@ -284,7 +293,7 @@ public class IntroActivity extends BaseActivity {
     /**
      * 시리얼 정보 저장 스레드
      */
-    private class RequestInsertSerialThread extends Thread {
+    public class RequestInsertSerialThread extends Thread {
         private HashMap<String, Object> hashMap = new HashMap();
 
         public void run() {
