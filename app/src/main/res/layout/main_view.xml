@@ -90,7 +90,7 @@
                         android:maxLength="9"
                         android:maxLines="1"
                         android:textColor="@color/bolder_text"
-                        android:hint="@string/sireal_number_insert"
+                        android:hint="@string/serial_number_insert"
                         android:textColorHint="@color/bolder_text"
                         android:textSize="18sp"
                         android:textStyle="bold" />

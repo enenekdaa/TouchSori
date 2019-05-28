@@ -107,6 +107,29 @@ public class Utils {
     }
 
     /**
+     * 시리얼 넘버 등록 여부
+     * @return
+     */
+    public void setSerialNumber(String serialNumber) {
+        editor.putString("serialNumber" , serialNumber);
+        editor.commit();
+    }
+
+    public String getSerialNumber() {
+        String serialNumber = sharedPreferences.getString("serialNumber" , "");
+        return serialNumber;
+    }
+
+    public void setRegistrated(boolean serial) {
+        editor.putBoolean("serial" , serial);
+        editor.commit();
+    }
+    public boolean isRegistrated() {
+        return sharedPreferences.getBoolean("serial", false);
+    }
+
+
+    /**
      * Dialog 사이즈 조절
      *
      * @return

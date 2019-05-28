@@ -10,8 +10,10 @@ import android.widget.Toast;
 import com.sori.touchsori.activity.AnsimActivity;
 import com.sori.touchsori.activity.PolicyActivity;
 import com.sori.touchsori.base.BaseActivity;
+import com.sori.touchsori.intro.IntroActivity;
 import com.sori.touchsori.setting.SettingActivity;
 import com.sori.touchsori.signIn.SignInActivity;
+import com.sori.touchsori.utill.LogUtil;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener{
 
@@ -37,6 +39,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         mainAnsimTv.setOnClickListener(this);
         mainSettingImg.setOnClickListener(this);
 
+        String serial = utils.getSerialNumber();
+
+        boolean serialBoolean = utils.isRegistrated();
+        LogUtil.d(": : : : : " , serial + " //////////////////////// " + serialBoolean);
     }
 
     @Override
@@ -54,6 +60,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                 break;
             }
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (deviceObj != null && deviceObj.size() != 0){
+            refreshToken();
+        }
+
     }
 
     @Override

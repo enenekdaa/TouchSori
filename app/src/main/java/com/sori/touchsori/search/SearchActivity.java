@@ -244,6 +244,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
 
         if (clickType.equals("delete")) {
             searchAdapterDialog.setTitleTv(this.getResources().getString(R.string.setting_sos_delete));
+            searchAdapterDialog.setTextName("삭제");
             searchAdapterDialog.okDeleteListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -253,6 +254,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
             });
         }else {
             searchAdapterDialog.setTitleTv(mContext.getResources().getString(R.string.setting_sos_insert));
+            searchAdapterDialog.setTextName("추가");
             searchAdapterDialog.okDeleteListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

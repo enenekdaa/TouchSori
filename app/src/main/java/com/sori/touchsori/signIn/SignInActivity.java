@@ -5,6 +5,7 @@ import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.Window;
@@ -17,6 +18,8 @@ import com.sori.touchsori.base.BaseActivity;
 import com.sori.touchsori.data.ApiAuthorizationData;
 import com.sori.touchsori.data.ApiDeviceData;
 import com.sori.touchsori.dialog.CustomMainDialog;
+import com.sori.touchsori.utill.ErrorCode;
+import com.sori.touchsori.utill.StringUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -84,6 +87,21 @@ public class SignInActivity extends BaseActivity implements View.OnClickListener
                 } else {
                     pNumber = mainNumberEdt.getText().toString();
                     sNumber = mainSNumberEdt.getText().toString();
+                    int error = checkValidationLongSerial(sNumber);
+                    switch (error) {
+
+                        case ErrorCode.ERROR_EMPTY_SERIAL:
+                            showMessage("serial error !");
+                            return;
+                        case ErrorCode.ERROR_LENGTH_SERIAL:
+                            showMessage("serial error !");
+                            return;
+                        case ErrorCode.ERROR_INVALID_SERIAL:
+                            showMessage("serial error !");
+                            return;
+                        default:
+                            break;
+                    }
                     showDialog();
                 }
 
@@ -241,5 +259,47 @@ public class SignInActivity extends BaseActivity implements View.OnClickListener
             e.printStackTrace();
         }
 
+    }
+
+    /**
+     * 시리얼 넘버 유효성 체크 (9자리)
+     *
+     * @param serialNumber
+     * @return
+     */
+    private int checkValidationLongSerial(String serialNumber) {
+        int error = ErrorCode.ERROR_NONE;
+        if (StringUtil.isEmpty(serialNumber)) return ErrorCode.ERROR_EMPTY_SERIAL;
+        if (serialNumber.length() == 6) return ErrorCode.ERROR_LENGTH_SHORT_SERIAL;
+        if (serialNumber.length() != 9) return ErrorCode.ERROR_LENGTH_SERIAL;
+        if (!checkLongSerialNumber(serialNumber)) return ErrorCode.ERROR_INVALID_SERIAL;
+        return error;
+    }
+
+    /**
+     * 시리얼 넘버 형식 체크 (9자리)
+     *
+     * @param serialNumber
+     * @return
+     */
+    private boolean checkLongSerialNumber(String serialNumber) {
+        String[] number = new String[9];
+        for (int i = 0; i < serialNumber.length(); i++) {
+            number[i] = String.valueOf(serialNumber.charAt(i));
+        }
+        if (!StringUtil.isEnglish(number[0])) return false;
+        if (!StringUtil.isNumber(number[1])) return false;
+        if (!StringUtil.isNumber(number[2])) return false;
+        if (!StringUtil.isNumber(number[3])) return false;
+        if (!StringUtil.isNumber(number[4])) return false;
+        if (!StringUtil.isNumber(number[5])) return false;
+        if (!StringUtil.isEnglish(number[6])) return false;
+        if (!(StringUtil.isNumber(number[7]) || StringUtil.isEnglish(number[7]))) return false;
+        if (!StringUtil.isNumber(number[8])) return false;
+
+        for (int i = 0; i < number.length; i++) {
+            Log.d(": : : : : : " , " number[" + i + "] : " + number[i]);
+        }
+        return true;
     }
 }

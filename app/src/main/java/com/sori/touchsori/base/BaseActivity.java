@@ -63,8 +63,6 @@ public class BaseActivity extends AppCompatActivity {
         mContext = this;
         soriApplication = SoriApplication.getInstance();
 
-        touchSori = TouchSori.getInstance(mContext , RequestCode.getRequestCode());
-
         apiUtil = new ApiUtil(this);
         utils = new Utils(this);
         deviceInfo = new DeviceInfo(this);
@@ -80,22 +78,22 @@ public class BaseActivity extends AppCompatActivity {
 
 
 
-        touchSori.setOnTouchSoriListener(new OnTouchSoriListener() {
-            @Override
-            public void onServiceStatus(Status status, String s) {
-                Log.d("onServiceStatus :::" , status + "//" + s);
-            }
-
-            @Override
-            public void onRegistrSerialNumber(Error error, String s) {
-                Log.d("onServiceStatus :::" , error + "//" + s);
-            }
-
-            @Override
-            public void onPressedButton(boolean b, String s) {
-                Log.d("onServiceStatus :::" , b + "//" + s);
-            }
-        });
+//        touchSori.setOnTouchSoriListener(new OnTouchSoriListener() {
+//            @Override
+//            public void onServiceStatus(Status status, String s) {
+//                Log.d("onServiceStatus :::" , status + "//" + s);
+//            }
+//
+//            @Override
+//            public void onRegistrSerialNumber(Error error, String s) {
+//                Log.d("onServiceStatus :::" , error + "//" + s);
+//            }
+//
+//            @Override
+//            public void onPressedButton(boolean b, String s) {
+//                Log.d("onServiceStatus :::" , b + "//" + s);
+//            }
+//        });
 
 
     }

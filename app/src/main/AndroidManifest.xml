@@ -2,9 +2,29 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.sori.touchsori">
 
+    <uses-permission
+        android:name="android.permission.GET_ACCOUNTS"
+        android:maxSdkVersion="22" />
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    <!-- 진동 퍼미션 -->
+    <uses-permission android:name="android.permision.VIBRATE" />
+    <!-- SMS 문자 퍼미션 -->
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <!-- 저장장치 퍼미션 -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <!-- 단말기 깨우기 퍼미션 -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <!-- GPS 퍼미션 -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!-- 오디오 퍼미션 -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+
 
     <application
         android:name=".SoriApplication"
@@ -22,13 +42,13 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".signIn.SignInActivity"/>
-        <activity android:name=".setting.SettingActivity"/>
+        <activity android:name=".signIn.SignInActivity" android:launchMode="singleTask"/>
+        <activity android:name=".setting.SettingActivity" android:launchMode="singleTask"/>
         <activity android:name=".activity.PolicyActivity" android:configChanges="keyboardHidden"/>
         <activity android:name=".MainActivity" android:launchMode="singleTask"/>
-        <activity android:name=".setting.SnumberUpdateActivity"/>
-        <activity android:name=".activity.AnsimActivity"/>
-        <activity android:name=".search.SearchActivity"/>
+        <activity android:name=".setting.SnumberUpdateActivity" android:launchMode="singleTask"/>
+        <activity android:name=".activity.AnsimActivity" android:launchMode="singleTask"/>
+        <activity android:name=".search.SearchActivity" android:launchMode="singleTask"/>
 
     </application>
 

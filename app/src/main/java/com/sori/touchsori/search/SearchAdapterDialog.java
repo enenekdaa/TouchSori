@@ -47,6 +47,10 @@ public class SearchAdapterDialog extends Dialog {
         });
     }
 
+    public void setTextName(String name) {
+        okTv.setText(name);
+    }
+
     public void okDeleteListener(View.OnClickListener onClickListener) {
         okTv.setOnClickListener(onClickListener);
     }
