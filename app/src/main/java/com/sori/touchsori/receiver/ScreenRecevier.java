@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.SystemClock;
 
 import com.sori.touchsori.SoriApplication;
+import com.sori.touchsori.service.GyroService;
 import com.sori.touchsori.utill.EtcUtil;
 import com.sori.touchsori.utill.LogUtil;
 
@@ -44,27 +45,26 @@ public class ScreenRecevier extends BroadcastReceiver {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) { // 롤리팝 (Ver.5.0)
             if (Intent.ACTION_SCREEN_ON.equalsIgnoreCase(intent.getAction())) {
                 if(EtcUtil.isGyroTouchServiceStopDevice()) {
-                 //   GyroService.getInstance(mContext).stopGyronfo();
+                    //   GyroService.getInstance(mContext).stopGyronfo();
 
                     LogUtil.d(TAG, "onReceive() -> getLocationCount : " + mApp.getLocationCount());
                     mApp.startTouchsoriService(TAG);
-//                    // 문자 등으로 screenOn이 된 경우 초기화
-//                    if(!(mApp.checkEmergencyTime(true, true))
-//                            || (mApp.getIsSoundParserStop()) && mApp.isGyroStopService()) {
-//                        GyroService.getInstance(mContext).initChangeGyro();
-//                        GyroService.getInstance(mContext).startTouchsoriService();
-//                        mApp.setIsGyroStopService(false);
-//                    }
+                    // 문자 등으로 screenOn이 된 경우 초기화
+                    if ((mApp.getIsSoundParserStop()) && mApp.isGyroStopService()) {
+                        GyroService.getInstance(mContext).initChangeGyro();
+                        GyroService.getInstance(mContext).startTouchsoriService();
+                        mApp.setIsGyroStopService(false);
+
+                    }
                 }
             } else if (Intent.ACTION_SCREEN_OFF.equalsIgnoreCase(intent.getAction())) {
                 mApp.startTouchsoriService(TAG);
-//                if(EtcUtil.isGyroTouchServiceStopDevice()
-//                        && (mApp.checkEmergencyTime(true, true)
-//                        || mApp.getIsSoundParserStop())) {
-//                    if(false == mApp.isMessageSending()) {
-//                        GyroService.getInstance(mContext).startGyroInfo();
-//                    }
-//                }
+                if(EtcUtil.isGyroTouchServiceStopDevice()
+                        || mApp.getIsSoundParserStop()) {
+                    if(false == mApp.isMessageSending()) {
+                        GyroService.getInstance(mContext).startGyroInfo();
+                    }
+                }
             }
         }
     }
@@ -82,11 +82,11 @@ public class ScreenRecevier extends BroadcastReceiver {
                 0);
 
         // TODO WakeLock 알람 타임
-        long intervalTime = 1800 * 1000; // 30분
+//        long intervalTime = 1800 * 1000; // 30분
 //        long intervalTime = 1200 * 1000; // 20분
 //        long intervalTime = 600 * 1000; // 10분
 //        long intervalTime = 60 * 1000; // 1분
-//        long intervalTime = 10 * 1000; // 10초
+        long intervalTime = 10 * 1000; // 10초
         long firstTime = SystemClock.elapsedRealtime();
         firstTime += intervalTime;
 

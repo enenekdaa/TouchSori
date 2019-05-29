@@ -207,7 +207,7 @@
                     android:padding="5dp"
                     android:background="@drawable/border_edittext"
                     android:text="@string/ansim_plus_setting"
-                    android:textColor="@color/colorWhite"
+                    android:textColor="@color/white"
                     android:hint="@string/btn_done"
                     android:textSize="14sp"
                     android:textStyle="bold" />
@@ -239,7 +239,7 @@
                 android:background="@drawable/btn_white_medium_n"
                 android:gravity="center"
                 android:imeOptions="actionDone"
-                android:textColor="@color/colorGray"
+                android:textColor="@color/gray"
                 android:textColorHint="@color/bolder_text"
                 android:hint="+ 긴급상황 수신자 등록"
                 android:textSize="16sp"

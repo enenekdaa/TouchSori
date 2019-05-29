@@ -108,10 +108,10 @@ public class TouchMessageService extends Service {
                 // 터치소리 서비스 시작
 //                startTouchsoriService();
                 mApp.startTouchsoriService(TAG);
-                PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-//                if (EtcUtil.isGyroTouchServiceStopDevice() && (false == pm.isInteractive())) {
-//                    GyroService.getInstance(mContext).startGyroInfo();
-//                }
+                PowerManager pm = (PowerManager)getSystemService(Context.POWER_SERVICE);
+                if(EtcUtil.isGyroTouchServiceStopDevice() && (false == pm.isInteractive())) {
+                    GyroService.getInstance(mContext).startGyroInfo();
+                }
             } else {
                 if (cnt > 0) {
                     mLocationHandler.sendEmptyMessage(LOCATION_UPDATE_START);
@@ -128,9 +128,9 @@ public class TouchMessageService extends Service {
 //                    startTouchsoriService();
                     mApp.startTouchsoriService(TAG);
                     PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-//                    if(EtcUtil.isGyroTouchServiceStopDevice() && (false == pm.isInteractive())) {
-//                        GyroService.getInstance(mContext).startGyroInfo();
-//                    }
+                    if(EtcUtil.isGyroTouchServiceStopDevice() && (false == pm.isInteractive())) {
+                        GyroService.getInstance(mContext).startGyroInfo();
+                    }
                 }
             }
         }
@@ -190,9 +190,9 @@ public class TouchMessageService extends Service {
                 mApp.startTouchsoriService(TAG);
 
                 PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-//                if(EtcUtil.isGyroTouchServiceStopDevice() && (false == pm.isInteractive())) {
-//                    GyroService.getInstance(mContext).startGyroInfo();
-//                }
+                if(EtcUtil.isGyroTouchServiceStopDevice() && (false == pm.isInteractive())) {
+                    GyroService.getInstance(mContext).startGyroInfo();
+                }
             }
         }
     }

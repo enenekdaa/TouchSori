@@ -54,7 +54,7 @@
             android:gravity="center"
             android:background="@drawable/btn_orange_big_n"
             android:text="@string/ansim_setting"
-            android:textColor="@color/colorWhite"
+            android:textColor="@color/white"
             android:hint="@string/btn_done"
             android:textSize="18sp"
             android:textStyle="bold" />

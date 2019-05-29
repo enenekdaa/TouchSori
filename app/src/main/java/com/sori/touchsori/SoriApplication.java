@@ -33,7 +33,6 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
-import kr.co.innochal.touchsorilibrary.classes.TouchSori;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -52,7 +51,10 @@ public class SoriApplication extends Application {
     private boolean isSoundParserStop = false;                                       // SoundParse Stop
     private int locationCount = -1;                                                 // 위치정보 발송 카운트
     private boolean isMessageSending = false;                                       // SMS 전송 중인지 확인하는 플래그
-
+    private boolean isGyroStropService = false;                                     // Gyroscope에 의한 TouchService  종료 여부
+    // 서비스 중지 플래그
+    private boolean isServiceStop = false;
+    private static boolean bInitialized = false;                            // 초기화 여부
 
     private final String[] permissions = new String[]{                           // 퍼미션
             Manifest.permission.ACCESS_FINE_LOCATION,
@@ -61,7 +63,6 @@ public class SoriApplication extends Application {
             Manifest.permission.READ_PHONE_STATE,
             Manifest.permission.SEND_SMS,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.ACCESS_NETWORK_STATE,
             Manifest.permission.READ_CONTACTS,
     };
 
@@ -140,6 +141,22 @@ public class SoriApplication extends Application {
         Toast.makeText(mContext , message , Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Gyroscope에 의해 TouchService가 종료되었는지 셋팅한다.
+     * @param isStopService
+     */
+    public void setIsGyroStopService(boolean isStopService) {
+        isGyroStropService = isStopService;
+    }
+
+    /**
+     *  Gyroscope에 의해 TouchService가 종료되었는지 여부를 리턴한다.
+     * @return
+     */
+    public boolean isGyroStopService() {
+        return isGyroStropService;
+    }
+
 
     /**
      * 터치소리 SoundParser 중지 정보
@@ -150,8 +167,7 @@ public class SoriApplication extends Application {
         return isSoundParserStop;
     }
 
-    // 서비스 중지 플래그
-    private boolean isServiceStop = false;
+
     /**
      * 서비스 중지
      *
@@ -161,6 +177,14 @@ public class SoriApplication extends Application {
         return isServiceStop;
     }
 
+
+    /**
+     * 초기화 여부
+     * @return
+     */
+    public boolean isInitialized() {
+        return bInitialized;
+    }
 
     /**
      * 서비스 중지 설정
@@ -200,6 +224,73 @@ public class SoriApplication extends Application {
      */
     public boolean isMessageSending() {
         return isMessageSending;
+    }
+
+    /**
+     * 안심귀가 시간 체크
+     * @param bStart
+     * @param checkIsSelected       emergency 설정에 selected된 것을 체크하는지 여부
+     * @return
+     */
+    public boolean checkEmergencyTime(boolean bStart, boolean checkIsSelected) {
+        LogUtil.i("checkEmergencyTime", "checkEmergencyTime() -> Start !!!");
+        boolean startNow = false;
+
+        if (bStart) {
+//            // 안심귀가 사용 체크 유무
+//            if ((!getConfig().isEmergency()) && checkIsSelected) {
+//                startNow = false;
+//                LogUtil.d("checkEmergencyTime", "checkEmergencyTime() -> bStart : " + bStart + ", startNow : " + startNow);
+//                return startNow;
+//            }
+//            // 시작 시간
+//            long timestampStart = getConfig().getTimeStart();
+//            LogUtil.d("checkEmergencyTime", "checkEmergencyTime() -> timestampStart : " + timestampStart);
+//            // 종료 시간
+//            long timestampEnd = getConfig().getTimeEnd();
+//            LogUtil.d("checkEmergencyTime", "checkEmergencyTime() -> timestampEnd : " + timestampEnd);
+//
+//            // 시작, 종료 시간
+//            if (timestampStart == -1
+//                    || timestampEnd == -1) {
+//                startNow = false;
+//                LogUtil.d("checkEmergencyTime", "checkEmergencyTime() -> bStart : " + bStart + ", startNow : " + startNow);
+//                return startNow;
+//            }
+//
+//            // 긴급 수신자
+//            int sizeMembes = getConfig().getEmergencyInfo().members.size();
+//            LogUtil.d(TAG, "checkEmergencyTime() -> sizeMembes : " + sizeMembes);
+//            if (sizeMembes == 0) {
+//                startNow = false;
+//                LogUtil.d(TAG, "checkEmergencyTime() -> bStart : " + bStart + ", startNow : " + startNow);
+//                return startNow;
+//            }
+//
+//            // 24시간 설정
+//            if (timestampStart == 0
+//                    && timestampEnd == 0) {
+//                startNow = true;
+//                LogUtil.d("checkEmergencyTime", "checkEmergencyTime() -> bStart : " + bStart + ", startNow : " + startNow);
+//                return startNow;
+//            }
+
+//            long currentTime = System.currentTimeMillis();
+//            LogUtil.d(TAG, "checkEmergencyTime() -> currentTime : " + currentTime);
+//            if (timestampStart > timestampEnd)
+//                timestampStart = timestampStart - (24 * 60 * 60 * 1000);
+//            LogUtil.d(TAG, "checkEmergencyTime() -> timestampStart : " + timestampStart);
+//            if (currentTime >= timestampStart
+//                    && currentTime < timestampEnd) {
+//                startNow = true;
+//                LogUtil.d(TAG, "checkEmergencyTime() -> bStart : " + bStart + ", startNow : " + startNow);
+//                return startNow;
+//            }
+//            LogUtil.d(TAG, "checkEmergencyTime() -> bStart : " + bStart + ", startNow : " + startNow);
+////            FileUtil.writeLog(mContext, TAG, "bStart : " + bStart + ", startNow : " + startNow);
+            startNow = true;
+        }
+        return startNow;
     }
 
     PendingIntent safetyZonePendingIntent;

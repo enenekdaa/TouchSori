@@ -28,6 +28,7 @@ import com.sori.touchsori.SoriApplication;
 import com.sori.touchsori.intro.IntroActivity;
 import com.sori.touchsori.receiver.ScreenRecevier;
 import com.sori.touchsori.utill.Define;
+import com.sori.touchsori.utill.EtcUtil;
 import com.sori.touchsori.utill.LogUtil;
 
 import java.util.Calendar;
@@ -76,6 +77,7 @@ public class MonitorService extends Service {
         mContext.registerReceiver(screenReceiver, screenFilter);
 
 
+
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { // 마시멜로우 (Ver.6.0)
 //            // Doze모드 리시버
 //            IntentFilter deviceIdleModeilter = new IntentFilter();
@@ -95,8 +97,8 @@ public class MonitorService extends Service {
 
         // 안심귀가 설정 여부
 
-        // 안심귀가 시작 시간 알람 등록
-        //     mApp.registerEmergencyStartAlarm();
+      ///   안심귀가 시작 시간 알람 등록
+       //      mApp.registerEmergencyStartAlarm();
 
         // 안심귀가 종료 시간 알람 등록
         //     mApp.registerEmergencyEndAlarm();
@@ -172,15 +174,37 @@ public class MonitorService extends Service {
         // 전역 (Application) 변수
 //        if (mApp == null) mApp = (TouchSoriApplication) mContext;
         mApp = (SoriApplication) mContext;
-        // 터치소리 서비스 중지 해제
-        mApp.setIsServiceStop(false);
-        LogUtil.d(TAG, "startTouchsoriService() -> getIsServiceStop() : " + mApp.getIsServiceStop());
 
-        Intent intent = new Intent(mContext, TouchService.class);
-        intent.setAction(TOUCH_ACTION_EMERGNECY);
-        intent.putExtra("start", Define.TOUCH_SERVICE_TYPE_START);
-        mContext.startService(intent);
+        LogUtil.d(TAG, "startTouchsoriService() -> isInitialized : " + mApp.isInitialized());
+        // 터치소리 설정 확인
+        if (mApp.isInitialized()) {
+            // 터치소리 서비스 중지 해제
+            mApp.setIsServiceStop(false);
+            LogUtil.d(TAG, "startTouchsoriService() -> getIsServiceStop() : " + mApp.getIsServiceStop());
 
+            // 안심귀가 사용 유무 확인
+            if (mApp.isInitialized()) {
+                if (mApp.checkEmergencyTime(true, true)) {
+                    // 터치소리 서비스 시작
+                    Intent intent = new Intent(mContext, TouchService.class);
+                    intent.setAction(TOUCH_ACTION_EMERGNECY);
+                    intent.putExtra("start", Define.TOUCH_SERVICE_TYPE_START);
+                    mContext.startService(intent);
+
+                } else {
+                    //서비스 종료 시 Gyroscope event도 종료
+                    if(EtcUtil.isGyroTouchServiceStopDevice() && (false == mApp.getIsSoundParserStop())) {
+                        GyroService.getInstance(mContext).stopGyronfo();
+                    }
+
+                    // 터치소리 서비스 중지
+                    Intent intent = new Intent(mContext, TouchService.class);
+                    intent.setAction(TOUCH_ACTION_EMERGNECY);
+                    intent.putExtra("start", Define.TOUCH_SERVICE_TYPE_END);
+                    mContext.startService(intent);
+                }
+            }
+        }
     }
 
     /**

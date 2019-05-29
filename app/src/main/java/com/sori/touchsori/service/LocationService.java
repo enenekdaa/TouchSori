@@ -16,6 +16,7 @@ import android.support.v4.app.NotificationCompat;
 
 import com.sori.touchsori.SoriApplication;
 import com.sori.touchsori.intro.IntroActivity;
+import com.sori.touchsori.utill.EtcUtil;
 import com.sori.touchsori.utill.LogUtil;
 
 
@@ -62,9 +63,9 @@ public class LocationService extends Service {
    //     mApp.setMessageSending(false);
 
         PowerManager pm = (PowerManager)getSystemService(Context.POWER_SERVICE);
-//        if(EtcUtil.isGyroTouchServiceStopDevice() && (false == pm.isInteractive())) {
-//            GyroService.getInstance(mContext).startGyroInfo();
-//        }
+        if(EtcUtil.isGyroTouchServiceStopDevice() && (false == pm.isInteractive())) {
+            GyroService.getInstance(mContext).startGyroInfo();
+        }
 
         // 터치소리 서비스 시작
         mApp.startTouchsoriService(TAG);

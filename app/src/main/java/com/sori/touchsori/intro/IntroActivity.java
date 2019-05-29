@@ -314,7 +314,7 @@ public class IntroActivity extends BaseActivity {
             data.put(KEY_MODE, "insert");
             data.put(KEY_HP, hp);
             data.put(KEY_COUNTRY_CODE, CountryISOUtil.getSIMCountryCode(mContext));
-            serialNumber = "A03697R15";      //deviceObj.get("deviceId").getAsString()
+            serialNumber = "A03697R17";      //deviceObj.get("deviceId").getAsString()
             serialNumber = serialNumber.trim();
             data.put(KEY_SERIAL_NUMBER, serialNumber);
             LogUtil.d(TAG, "RequestInsertSerialThread() -> serialNumber : " + serialNumber.length());

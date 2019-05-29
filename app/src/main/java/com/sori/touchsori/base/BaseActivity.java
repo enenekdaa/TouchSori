@@ -23,15 +23,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-import kr.co.innochal.touchsorilibrary.classes.OnTouchSoriListener;
-import kr.co.innochal.touchsorilibrary.classes.TouchSori;
-import kr.co.innochal.touchsorilibrary.common.App;
-import kr.co.innochal.touchsorilibrary.common.Config;
-import kr.co.innochal.touchsorilibrary.common.Error;
-import kr.co.innochal.touchsorilibrary.common.RequestCode;
-import kr.co.innochal.touchsorilibrary.common.Status;
-
-import kr.co.innochal.touchsorilibrary.communication.Request;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -46,7 +37,6 @@ public class BaseActivity extends AppCompatActivity {
 
     public JsonObject deviceObj;
 
-    public TouchSori touchSori;
     public String loginToken;
 
     @Override

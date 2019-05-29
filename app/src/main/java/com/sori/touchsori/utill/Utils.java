@@ -81,6 +81,22 @@ public class Utils {
             return new JsonObject();
         return jsonElement.getAsJsonObject();
     }
+
+    /**
+     * 버튼 타입 가져오기
+     */
+    public int getButtonType() {
+        String serialNumber = sharedPreferences.getString("serialNumber", null);
+        if (StringUtil.isEmpty(serialNumber)) {
+            serialNumber = "-1";
+            return Integer.parseInt(serialNumber);
+        } else {
+            serialNumber.trim();
+            return Integer.parseInt(serialNumber.substring(serialNumber.length() - 1, serialNumber.length()));
+        }
+    }
+
+
     /**
      * 긴급 수신자 리스트
      *
@@ -188,20 +204,6 @@ public class Utils {
         return sharedPreferences.getBoolean("serial", false);
     }
 
-
-    /**
-     * 버튼 타입 가져오기
-     */
-    public int getButtonType() {
-        String serialNumber = sharedPreferences.getString(Define.PREFER_APP_REG_KEY, null);
-        if (StringUtil.isEmpty(serialNumber)) {
-            serialNumber = "-1";
-            return Integer.parseInt(serialNumber);
-        } else {
-            serialNumber.trim();
-            return Integer.parseInt(serialNumber.substring(serialNumber.length() - 1, serialNumber.length()));
-        }
-    }
 
     /**
      * 안심귀가 종료 시간

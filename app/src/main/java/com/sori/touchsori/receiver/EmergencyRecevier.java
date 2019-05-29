@@ -8,16 +8,22 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.view.Gravity;
 
 import com.sori.touchsori.R;
 import com.sori.touchsori.SoriApplication;
+import com.sori.touchsori.service.GyroService;
+import com.sori.touchsori.service.ServiceUtil;
 import com.sori.touchsori.service.TouchMessageService;
 import com.sori.touchsori.utill.Define;
 import com.sori.touchsori.utill.DeviceUtil;
+import com.sori.touchsori.utill.EtcUtil;
 import com.sori.touchsori.utill.LogUtil;
+import com.sori.touchsori.utill.MediaUtil;
+import com.sori.touchsori.utill.WakeLockUtil;
 
 
-import kr.co.innochal.touchsorilibrary.receiver.SoundReceiver;
+import java.util.Locale;
 
 import static android.content.Context.ALARM_SERVICE;
 import static com.sori.touchsori.utill.Define.ALARM_ID_SEND_LOCATION;
@@ -62,6 +68,93 @@ public class EmergencyRecevier extends BroadcastReceiver {
 //                }
 //            }
 //        }
+        if (Define.ACTION_EMERGENCY_TIME_START.equalsIgnoreCase(intent.getAction())) {
+            // 화면 깨우기
+            WakeLockUtil.wakeLockWithScreenOn(mContext);
+            WakeLockUtil.releaseWakeLock();
+
+
+            Locale systemLocale = mContext.getResources().getConfiguration().locale;
+            String strLanguage = systemLocale.getLanguage();
+            MediaUtil.getInstance(mContext).soundStartFromFileResource(R.raw.emergencystart_ko, false, null);
+
+//            if(mApp.getConfig().getHeadsetPlug()) {
+//                mApp.onAlertDialog(mContext.getString(R.string.earphone_plug_msg), Gravity.LEFT);
+//
+//                // Media Button Check Service 시작
+//                intent = new Intent(mContext, MediaService.class);
+//                intent.putExtra("start", true);
+//                mContext.startService(intent);
+//            }
+
+//            long timeEnd = getTimestampTimeEndNext();
+//            mApp.getConfig().setTimeEnd(timeEnd);
+//            LogUtil.d(TAG, "onReceive() -> getTimeEnd : " + mApp.getConfig().getTimeEnd());
+//            FileUtil.writeLog(mContext, TAG,  "onReceive() -> getTimeEnd : " + mApp.getConfig().getTimeEnd());
+//
+//            // 안심귀가 종료 시간 알람 등록
+//            mApp.registerEmergencyEndAlarm();
+//            FileUtil.writeLog(mContext, TAG, "ACTION_EMERGENCY_TIME_START registerEmergencyEndAlarm!!");
+
+            //  터치소리 서비스 시작
+            ServiceUtil serviceUtil = new ServiceUtil();
+            serviceUtil.startTouchSoriService(mContext, TOUCH_ACTION_EMERGNECY, "start", Define.TOUCH_SERVICE_TYPE_START);
+
+
+        } else if (Define.ACTION_EMERGENCY_TIME_END.equalsIgnoreCase(intent.getAction())) {
+
+            // 화면 깨우기
+            WakeLockUtil.wakeLockWithScreenOn(mContext);
+            WakeLockUtil.releaseWakeLock();
+
+
+//            long timeStart = getTimestampTimeStartNext();
+//            mApp.getConfig().setTimeStart(timeStart);
+//            LogUtil.d(TAG, "onReceive() -> getTimeStart : " + mApp.getConfig().getTimeStart());
+////            FileUtil.writeLog(mContext, TAG, "onReceive() -> getTimeStart : " +  mApp.getConfig().getTimeStart());
+//
+//            // 안심귀가 시작시간 알람 등록
+//            mApp.registerEmergencyStartAlarm();
+//
+
+            //서비스 종료 시 Gyroscope event도 종료
+            if(EtcUtil.isGyroTouchServiceStopDevice() && (false == mApp.getIsSoundParserStop())) {
+                GyroService.getInstance(mContext).stopGyronfo();
+            }
+
+//            // 미디어 버튼 서비스 종료
+//            intent = new Intent(mContext, MediaService.class);
+//            intent.putExtra("start", false);
+//            mContext.startService(intent);
+//            mContext.stopService(new Intent(mContext, MediaPlayerButtonService.class));
+
+            ServiceUtil serviceUtil = new ServiceUtil();
+            serviceUtil.startTouchSoriService(mContext, TOUCH_ACTION_EMERGNECY, "start", Define.TOUCH_SERVICE_TYPE_END);
+
+
+        } else if (Define.ACTION_SEND_LOCATION.equals(intent.getAction())) { // 위치정보 전송
+            // 전역 (Application) 변수
+            if (mApp == null) mApp = (SoriApplication) mContext;
+            LogUtil.d(TAG, "getLocationCount : " + mApp.getLocationCount());
+            if (mApp.getLocationCount() > 3
+                    || mApp.getLocationCount() == -1) {
+                mApp.setLocationCount(-1);
+
+                // 위치정보 전송 알람 해제
+                unregisterLocationAlarm();
+
+                //위치 전송 메시지 플래그 해지
+                mApp.setMessageSending(false);
+
+                ServiceUtil serviceUtil = new ServiceUtil();
+                serviceUtil.startTouchSoriService(mContext, TOUCH_ACTION_EMERGNECY, "start", Define.TOUCH_SERVICE_TYPE_START);
+            } else {
+                // 메시지 서비스 시작
+                intent = new Intent(mContext, TouchMessageService.class);
+                intent.setAction(Define.MSG_SERVICE_ACTION_LOCATION);
+                mContext.startService(intent);
+            }
+        }
 
      if (Define.ACTION_SEND_LOCATION.equals(intent.getAction())) { // 위치정보 전송
             // 전역 (Application) 변수

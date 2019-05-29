@@ -13,6 +13,7 @@
     <!-- SMS 문자 퍼미션 -->
     <uses-permission android:name="android.permission.SEND_SMS" />
     <!-- 저장장치 퍼미션 -->
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <!-- 단말기 깨우기 퍼미션 -->
@@ -82,6 +83,46 @@
             android:name=".service.LocationService"
             android:enabled="true"
             android:exported="true" />
+
+        <!-- 안심귀가 리시버 -->
+        <receiver
+            android:name=".receiver.EmergencyRecevier"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="kr.co.innochal.ACTION_EMERGENCY_TIME_START" />
+                <action android:name="kr.co.innochal.ACTION_EMERGENCY_TIME_END" />
+                <action android:name="kr.co.innochal.ACTION_SEND_LOCATION" />
+            </intent-filter>
+        </receiver>
+
+        <!-- 사운드 리시버 -->
+        <receiver
+            android:name=".receiver.SoundReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="kr.co.innochal.ACTION_SOUND_PARSER_RUNNING" />
+            </intent-filter>
+        </receiver>
+
+        <!-- 모니터 서비스 -->
+        <service
+            android:name=".service.MonitorService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <!-- 스크린 리시버 -->
+        <receiver
+            android:name=".receiver.ScreenRecevier"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.SCREEN_ON" />
+                <action android:name="android.intent.action.SCREEN_OFF" />
+            </intent-filter>
+        </receiver>
+
 
 
     </application>

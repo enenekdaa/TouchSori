@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import com.sori.touchsori.SoriApplication;
 import com.sori.touchsori.callback.CallbackSound;
+import com.sori.touchsori.receiver.SoundReceiver;
 import com.sori.touchsori.task.SoundPaserTask;
 import com.sori.touchsori.utill.Define;
 import com.sori.touchsori.utill.LogUtil;
@@ -31,8 +32,6 @@ import com.sori.touchsori.utill.WakeLockUtil;
 import java.util.Timer;
 import java.util.TimerTask;
 
-
-import kr.co.innochal.touchsorilibrary.receiver.SoundReceiver;
 
 import static android.app.PendingIntent.getBroadcast;
 import static com.sori.touchsori.utill.Define.ACTION_SOUND_PARSER_RUNNING;
@@ -126,20 +125,17 @@ public class TouchService extends Service {
                 // 터치 서비스 중지
                 if (mApp.getIsServiceStop()) return;
 
-//                // 안심귀가 시간체크 중지
-//                if (serviceMode == PARSE_TYPE_EMERGENCY
-//                        && !mApp.checkEmergencyTime(true, true) && false == mApp.getIsSoundParserStop()) {
-////                    bStart = false;
-//
-//                    FileUtil.writeLog(mContext, TAG, "OnSoundParseComplete()  serviceMode == PARSE_TYPE_EMERGENCY " +
-//                            "&& !mApp.checkEmergencyTime(true) && false == mApp.getIsSoundParserStop()");
-//
-//                    stopSelf();
-//                    // 사운드 알람 등록
-//                    registerSoundParserTaskAlarm();
-//                    return;
-//                }
+                // 안심귀가 시간체크 중지
+                if (serviceMode == PARSE_TYPE_EMERGENCY
+                        && !mApp.checkEmergencyTime(true, true) && false == mApp.getIsSoundParserStop()) {
+//                    bStart = false;
 
+
+                    stopSelf();
+                    // 사운드 알람 등록
+                    registerSoundParserTaskAlarm();
+                    return;
+                }
                 // SoundParserTask 중지
                 if (false == mApp.getIsSoundParserStop() && resultType <= SOUND_PARSE_RESULT_CANCEL) {
                     // 사운드 알람 등록
