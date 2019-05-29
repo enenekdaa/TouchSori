@@ -24,6 +24,7 @@ import com.sori.touchsori.R;
 import com.sori.touchsori.SoriApplication;
 import com.sori.touchsori.base.BaseActivity;
 import com.sori.touchsori.data.ApiAuthorizationData;
+import com.sori.touchsori.service.ServiceUtil;
 import com.sori.touchsori.signIn.DeviceInfo;
 import com.sori.touchsori.signIn.SignInActivity;
 import com.sori.touchsori.utill.CountryISOUtil;
@@ -85,6 +86,8 @@ public class IntroActivity extends BaseActivity {
         deviceId = utils.getDeviceID();
 
         if (soriApplication.checkPermissionAll(this)) {
+            ServiceUtil serviceUtil = new ServiceUtil();
+            serviceUtil.startMonitorService(mContext);
             initView();
 
         }
