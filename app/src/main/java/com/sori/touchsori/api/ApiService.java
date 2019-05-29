@@ -44,6 +44,11 @@ public interface ApiService {
     @POST("/safecity-api-develop/v1/pp/things/devices/autojoin")
     Call<ApiDeviceData> deviceAdd(@Body Map<String , String > temp_map);
 
+
+    // 현재위치 조회 3
+    @Headers({"Content-Type:application/json" , "appKey:test"})
+    @POST("/safecity-api-develop//vi/pp/devices/{deviceId}/location/current/request")
+    Call<Void> locationLoad3(@Header("authorization") String authorization , @Path("deviceId") String deviceId , @Body Map<String , String > temp_map);
 //    //디바이스 정보 수정
 //    @FormUrlEncoded
 //    @Headers({"Content-Type:application/json" ,  "serviceId:pp" , "appKey:test"})

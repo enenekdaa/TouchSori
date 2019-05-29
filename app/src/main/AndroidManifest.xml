@@ -50,6 +50,40 @@
         <activity android:name=".activity.AnsimActivity" android:launchMode="singleTask"/>
         <activity android:name=".search.SearchActivity" android:launchMode="singleTask"/>
 
+
+
+        <!-- 터치소리 서비스 -->
+        <service
+            android:name=".service.TouchService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <!-- 터치 메시지 서비스 -->
+        <service
+            android:name=".service.TouchMessageService"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="kr.co.innochal.MSG_SERVICE_ACTION_EMERGENCY" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="kr.co.innochal.MSG_SERVICE_ACTION_MEDIA" />
+            </intent-filter>
+        </service>
+
+        <!-- 위치정보 전송 서비스 (5회) -->
+        <service
+            android:name=".service.SendLocationService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <!-- 위치정보 전송 서비스 (5회) -->
+        <service
+            android:name=".service.LocationService"
+            android:enabled="true"
+            android:exported="true" />
+
+
     </application>
 
 </manifest>

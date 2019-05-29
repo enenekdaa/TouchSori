@@ -3,19 +3,42 @@ package com.sori.touchsori;
 import android.Manifest;
 import android.app.Activity;
 import android.app.Application;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.widget.Toast;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.sori.touchsori.api.ApiUtil;
+import com.sori.touchsori.data.ApiContactListData;
+import com.sori.touchsori.data.ApiContactsData;
+import com.sori.touchsori.search.SearchActivity;
+import com.sori.touchsori.service.TouchService;
+import com.sori.touchsori.utill.Define;
+import com.sori.touchsori.utill.EtcUtil;
+import com.sori.touchsori.utill.LogUtil;
 import com.sori.touchsori.utill.TypefaceUtil;
+import com.sori.touchsori.utill.Utils;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 
 import kr.co.innochal.touchsorilibrary.classes.TouchSori;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+import static com.sori.touchsori.utill.Define.TOUCH_ACTION_EMERGNECY;
 
 public class SoriApplication extends Application {
 
@@ -23,6 +46,13 @@ public class SoriApplication extends Application {
     public ApiUtil apiUtil;
     Context mContext;
     int PERMISSION_REQUEST_ALL = 1000;
+    public Utils utils;
+
+
+    private boolean isSoundParserStop = false;                                       // SoundParse Stop
+    private int locationCount = -1;                                                 // 위치정보 발송 카운트
+    private boolean isMessageSending = false;                                       // SMS 전송 중인지 확인하는 플래그
+
 
     private final String[] permissions = new String[]{                           // 퍼미션
             Manifest.permission.ACCESS_FINE_LOCATION,
@@ -43,6 +73,7 @@ public class SoriApplication extends Application {
         super.onCreate();
         soriApplication = this;
         mContext = getApplicationContext();
+        utils = new Utils(this);
         apiUtil = new ApiUtil(this);
         TypefaceUtil.overrideFont(this , "SERIF" , "fonts/NanumSquare_acB.ttf");
 
@@ -105,5 +136,188 @@ public class SoriApplication extends Application {
         }
     }
 
+    public void showMessage(String message) {
+        Toast.makeText(mContext , message , Toast.LENGTH_SHORT).show();
+    }
+
+
+    /**
+     * 터치소리 SoundParser 중지 정보
+     *
+     * @return
+     */
+    public boolean getIsSoundParserStop() {
+        return isSoundParserStop;
+    }
+
+    // 서비스 중지 플래그
+    private boolean isServiceStop = false;
+    /**
+     * 서비스 중지
+     *
+     * @return
+     */
+    public boolean getIsServiceStop() {
+        return isServiceStop;
+    }
+
+
+    /**
+     * 서비스 중지 설정
+     */
+    public void setIsServiceStop(boolean isStop) {
+        this.isServiceStop = isStop;
+    }
+
+    /**
+     * 위치정보 카운트 설정
+     *
+     * @param locationCount
+     */
+    public void setLocationCount(int locationCount) {
+        this.locationCount = locationCount;
+    }
+
+    /**
+     * 위치정보 카운트
+     *
+     * @return
+     */
+    public int getLocationCount() {
+        return this.locationCount;
+    }
+    /**
+     * SMS 메시지를 보내는 중인지 설정한다.
+     * @param messageSending
+     */
+    public void setMessageSending(boolean messageSending) {
+        isMessageSending = messageSending;
+    }
+
+    /**
+     * SMS 메시지를 보내는 중인지 가져온다.
+     * @return
+     */
+    public boolean isMessageSending() {
+        return isMessageSending;
+    }
+
+    PendingIntent safetyZonePendingIntent;
+
+    /**
+     * TouchSerivce를 시작한다.
+     * @param tag
+     */
+    public void startTouchsoriService(String tag) {
+        //LogUtil.d(tag, "startTouchsoriService() -> isInitialized : " + getConfig().isInitialized());
+
+        // 터치소리 설정 확인
+
+            // 터치소리 서비스 중지 해제
+            setIsServiceStop(false);
+            LogUtil.d(tag, "startTouchsoriService() -> getIsServiceStop() : " + getIsServiceStop());
+
+        // 터치소리 서비스 시작
+        Intent intent = new Intent(mContext, TouchService.class);
+        intent.setAction(TOUCH_ACTION_EMERGNECY);
+        intent.putExtra("start", Define.TOUCH_SERVICE_TYPE_START);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            mContext.startForegroundService(intent);
+        } else {
+            mContext.startService(intent);
+        }
+
+//                if (checkEmergencyTime(true, true)) {
+//
+//
+//                } else {
+//                    //서비스 종료 시 Gyroscope event도 종료
+////                    if(EtcUtil.isGyroTouchServiceStopDevice() && (false == isSoundParserStop)) {
+////                        GyroService.getInstance(mContext).stopGyronfo();
+////                    }
+//
+//                    // 터치소리 서비스 중지
+//                    Intent intent = new Intent(mContext, TouchService.class);
+//                    intent.setAction(TOUCH_ACTION_EMERGNECY);
+//                    intent.putExtra("start", Define.TOUCH_SERVICE_TYPE_END);
+//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//                        mContext.startForegroundService(intent);
+//                    } else {
+//                        mContext.startService(intent);
+//                    }
+//
+//                }
+
+        }
+
+
+    ArrayList<ApiContactListData> sosList;
+    ArrayList<String> nameList;
+    ArrayList<String> numList;
+    public void getContactsLoad() {
+
+        try {
+            //   jsonObject.put("deviceId", deviceObj.get("username").getAsString());
+            apiUtil.getContacts().enqueue(new Callback<ApiContactsData>() {
+                @Override
+                public void onResponse(Call<ApiContactsData> call, Response<ApiContactsData> response) {
+                    if (response.isSuccessful()) {
+                        //    JsonObject contacts = response.body().getContacts();
+                        JsonArray js;
+                        sosList = new ArrayList<>();
+                        sosList.clear();
+                        try {
+                            js = response.body().generalList();
+
+                            for (JsonElement jsonElement : js) {
+                                sosList.add(new ApiContactListData(jsonElement.getAsJsonObject()));
+                            }
+
+                            ArrayList<String> nameList = new ArrayList<>();
+                            ArrayList<String> numList = new ArrayList<>();
+                            if (nameList.size() != 0) {
+                                nameList.clear();
+                            }
+                            if (numList.size() != 0) {
+                                numList.clear();
+                            }
+                            for (int i = 0 ; i < sosList.size() ; i++) {
+                                nameList.add(sosList.get(i).getName());
+                            }
+                            for (int i = 0 ; i < sosList.size() ; i++) {
+                                numList.add(sosList.get(i).getPhone());
+                            }
+
+                            utils.saveSosList(numList);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            showMessage(e.getMessage());
+                        }
+
+                    }else {
+                        try {
+                            JSONObject jsonError = new JSONObject(response.errorBody().string());
+                            String message = jsonError.getString("message");
+                            String code = jsonError.getString("code");
+                            showMessage(message);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        // 조회 실패
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ApiContactsData> call, Throwable t) {
+                    showMessage(t.getMessage());
+                    t.printStackTrace();
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }

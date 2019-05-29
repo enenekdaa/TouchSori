@@ -174,6 +174,8 @@ public class ApiUtil {
     }
 
 
+
+
     /**
      * 사이렌 설정
      */
@@ -288,6 +290,28 @@ public class ApiUtil {
         }
 
         Call<Void> call = apiService.deleteContacts(deviceID, loginToken, tempMap);
+
+
+        return call;
+    }
+
+
+    /**
+     * 현재 위치 호출 3
+     */
+    public Call locationCall3() {
+        HashMap<String, String> tempMap = new HashMap<>();
+        //     HashMap<String,String> headerMap = new HashMap<>();
+
+        try {
+            deviceID = utils.getDeviceID();
+            loginToken = utils.getLoginToken();
+            tempMap.put("deviceId", deviceID);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        Call<Void> call = apiService.locationLoad3(loginToken , deviceID,  tempMap);
 
 
         return call;

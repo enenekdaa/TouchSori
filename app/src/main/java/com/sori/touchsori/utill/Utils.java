@@ -3,8 +3,10 @@ package com.sori.touchsori.utill;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Point;
+import android.os.Build;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.Window;
@@ -16,16 +18,21 @@ import com.google.gson.JsonParser;
 import com.sori.touchsori.api.ApiUtil;
 import com.sori.touchsori.base.BaseActivity;
 import com.sori.touchsori.data.ApiAuthorizationData;
+import com.sori.touchsori.service.TouchService;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.sori.touchsori.utill.Define.PREFER_TIME_END;
 
 public class Utils {
 
@@ -59,6 +66,8 @@ public class Utils {
     }
 
 
+
+
     public void setDeviceInfo(String deviceInfo) {
         editor.putString("deviceInfo", deviceInfo);
         editor.commit();
@@ -71,6 +80,41 @@ public class Utils {
         if (jsonElement.isJsonNull())
             return new JsonObject();
         return jsonElement.getAsJsonObject();
+    }
+    /**
+     * 긴급 수신자 리스트
+     *
+     * @return
+     */
+
+    public void saveSosList(ArrayList<String> arrayList) {
+        JSONArray a = new JSONArray();
+        for (int i = 0; i < arrayList.size(); i++) {
+            a.put(arrayList.get(i));
+        }
+        if (!arrayList.isEmpty()) {
+            editor.putString("sosList", a.toString());
+        } else {
+            editor.putString("sosList", null);
+        }
+        editor.apply();
+    }
+
+    public ArrayList<String> getSosList () {
+        String json = sharedPreferences.getString("sosList" ,null);
+        ArrayList<String> list = new ArrayList<String>();
+        if (json != null) {
+            try {
+                JSONArray a = new JSONArray(json);
+                for (int i = 0; i < a.length(); i++) {
+                    String data = a.optString(i);
+                    list.add(data);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return list;
     }
 
     /**
@@ -88,6 +132,22 @@ public class Utils {
 
         String token = sharedPreferences.getString("loginToken", "");
         return token;
+    }
+
+    /**
+     * siren on / off
+     *
+     * @return
+     */
+    public void saveSiren(String status) {
+        editor.putString("sirenStatus", status);
+        editor.commit();
+    }
+
+    public String getSiren() {
+
+        String alarmStatus = sharedPreferences.getString("sirenStatus", "");
+        return alarmStatus;
     }
 
     /**
@@ -128,6 +188,40 @@ public class Utils {
         return sharedPreferences.getBoolean("serial", false);
     }
 
+
+    /**
+     * 버튼 타입 가져오기
+     */
+    public int getButtonType() {
+        String serialNumber = sharedPreferences.getString(Define.PREFER_APP_REG_KEY, null);
+        if (StringUtil.isEmpty(serialNumber)) {
+            serialNumber = "-1";
+            return Integer.parseInt(serialNumber);
+        } else {
+            serialNumber.trim();
+            return Integer.parseInt(serialNumber.substring(serialNumber.length() - 1, serialNumber.length()));
+        }
+    }
+
+    /**
+     * 안심귀가 종료 시간
+     */
+    public long getTimeEnd() {
+        return sharedPreferences.getLong(PREFER_TIME_END, -1);
+    }
+
+
+    public void startTouchSoriService(Context context, String action, String extraName, int extraValue) {
+        Intent intent = new Intent(context, TouchService.class);
+        intent.setAction(action);
+        intent.putExtra(extraName, extraValue);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(intent);
+        } else {
+            context.startService(intent);
+        }
+//        context.startService(intent);
+    }
 
     /**
      * Dialog 사이즈 조절

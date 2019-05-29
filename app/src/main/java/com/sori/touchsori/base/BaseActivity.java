@@ -102,6 +102,8 @@ public class BaseActivity extends AppCompatActivity {
     public void showMessage(String message) {
         Toast.makeText(mContext , message , Toast.LENGTH_SHORT).show();
     }
+
+
     String refreshToken;
 
     /**

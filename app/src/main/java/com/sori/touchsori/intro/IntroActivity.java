@@ -46,7 +46,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
 import retrofit2.http.QueryMap;
 
+import static com.sori.touchsori.utill.Define.AUTH_TOKEN;
+import static com.sori.touchsori.utill.Define.KEY_COUNTRY_CODE;
 import static com.sori.touchsori.utill.Define.KEY_HP;
+import static com.sori.touchsori.utill.Define.KEY_MODE;
+import static com.sori.touchsori.utill.Define.KEY_MODE_INSERT;
 import static com.sori.touchsori.utill.Define.KEY_RESULT;
 import static com.sori.touchsori.utill.Define.KEY_SAVED_SERIAL_NUMBER;
 import static com.sori.touchsori.utill.Define.KEY_SERIAL_NUMBER;
@@ -81,8 +85,8 @@ public class IntroActivity extends BaseActivity {
         deviceId = utils.getDeviceID();
 
         if (soriApplication.checkPermissionAll(this)) {
-
             initView();
+
         }
     }
 
@@ -146,12 +150,8 @@ public class IntroActivity extends BaseActivity {
         deviceInfo.setObject(utils.getDeviceInfo());
 
 
+        userStateApi();
 
-        if (loginTp.matches("") || deviceId.matches("")){
-            userStateApi();
-        }else {
-            serialRegist();
-        }
 
 
     }
@@ -263,6 +263,7 @@ public class IntroActivity extends BaseActivity {
 
     private void goMainAct(Intent intent) {
        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        soriApplication.getContactsLoad();
         startActivity(intent);
         finish();
     }
@@ -306,11 +307,11 @@ public class IntroActivity extends BaseActivity {
 
             RequestSerial requestSerial = RequestSerial.retrofit.create(RequestSerial.class);
             Map<String, String> data = new HashMap<>();
-            data.put("auth_token", "innochal001");
-            data.put("mode", "insert");
-            data.put("hp", hp);
-            data.put("contry_code", CountryISOUtil.getSIMCountryCode(mContext));
-            serialNumber = "A03697R17";      //deviceObj.get("deviceId").getAsString()
+            data.put(AUTH_TOKEN, "innochal001");
+            data.put(KEY_MODE, "insert");
+            data.put(KEY_HP, hp);
+            data.put(KEY_COUNTRY_CODE, CountryISOUtil.getSIMCountryCode(mContext));
+            serialNumber = "A03697R15";      //deviceObj.get("deviceId").getAsString()
             serialNumber = serialNumber.trim();
             data.put(KEY_SERIAL_NUMBER, serialNumber);
             LogUtil.d(TAG, "RequestInsertSerialThread() -> serialNumber : " + serialNumber.length());
@@ -356,7 +357,7 @@ public class IntroActivity extends BaseActivity {
                     }
                 }
             } catch (IOException e) {
-
+                e.printStackTrace();
             }
 
         }

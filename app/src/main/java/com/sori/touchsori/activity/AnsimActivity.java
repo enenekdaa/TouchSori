@@ -193,13 +193,16 @@ public class AnsimActivity extends BaseActivity implements View.OnClickListener{
                     if (response.body() == null) {
                         sirenState = "off";
                         ansimSirenCb.setChecked(false);
+                        utils.saveSiren("off");
                     }else {
                         // 키고 ..
                         apiSirenLoadData = response.body();
                         if (apiSirenLoadData.getStatus().equals("on")) {
                             ansimSirenCb.setChecked(true);
+                            utils.saveSiren("on");
                         }else {
                             ansimSirenCb.setChecked(false);
+                            utils.saveSiren("off");
                         }
                     }
                 }else {
@@ -413,7 +416,7 @@ public class AnsimActivity extends BaseActivity implements View.OnClickListener{
 
 
     ArrayList<ApiContactListData> sosList;
-    private void getContactsLoad() {
+    public void getContactsLoad() {
 
         try {
             //   jsonObject.put("deviceId", deviceObj.get("username").getAsString());
@@ -431,6 +434,7 @@ public class AnsimActivity extends BaseActivity implements View.OnClickListener{
                             for (JsonElement jsonElement : js) {
                                 sosList.add(new ApiContactListData(jsonElement.getAsJsonObject()));
                             }
+
                         } catch (Exception e) {
                             e.printStackTrace();
                             showMessage(e.getMessage());
