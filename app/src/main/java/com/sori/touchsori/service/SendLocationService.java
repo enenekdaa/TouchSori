@@ -19,6 +19,9 @@ import com.sori.touchsori.utill.Define;
 import com.sori.touchsori.utill.LocationInfo;
 import com.sori.touchsori.utill.LogUtil;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -176,13 +179,24 @@ public class SendLocationService extends Service {
 
                     stopSelf();
                 }else {
-
+                    try {
+                        String message;
+                        String code;
+                        JSONObject jsonError = new JSONObject(response.errorBody().string());
+                        code = jsonError.getString("code");
+                        message = jsonError.getString("message");
+                        mApp.showMessage(message);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
-
+                t.printStackTrace();
             }
         });
 
@@ -212,7 +226,6 @@ public class SendLocationService extends Service {
                         new Thread() {
                             @Override
                             public void run() {
-
                                 if(12 == mType) {
                                     RequestSendLocationTask();
                                 }

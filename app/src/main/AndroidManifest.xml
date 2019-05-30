@@ -5,7 +5,12 @@
     <uses-permission
         android:name="android.permission.GET_ACCOUNTS"
         android:maxSdkVersion="22" />
+
+
     <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- 부팅 퍼미션 -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
     <!-- 진동 퍼미션 -->
@@ -26,6 +31,7 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <application
         android:name=".SoriApplication"
@@ -50,6 +56,7 @@
         <activity android:name=".setting.SnumberUpdateActivity" android:launchMode="singleTask"/>
         <activity android:name=".activity.AnsimActivity" android:launchMode="singleTask"/>
         <activity android:name=".search.SearchActivity" android:launchMode="singleTask"/>
+        <activity android:name=".dialog.AlertDialogFinal" android:launchMode="singleTask" android:theme="@style/Theme.AppCompat.Dialog"/>
 
 
 
@@ -58,6 +65,16 @@
             android:name=".service.TouchService"
             android:enabled="true"
             android:exported="true" />
+
+        <!-- 부팅 리시버 -->
+        <receiver
+            android:name=".receiver.BootReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
 
         <!-- 터치 메시지 서비스 -->
         <service

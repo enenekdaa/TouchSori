@@ -47,7 +47,8 @@ public interface ApiService {
 
     // 현재위치 조회 3
     @Headers({"Content-Type:application/json" , "appKey:test"})
-    @POST("/safecity-api-develop//vi/pp/devices/{deviceId}/location/current/request")
+    //@POST("/v1/pp/devices/{deviceId}/location/current/request")
+    @POST("/safecity-api-develop/v1/pp/devices/{deviceId}/location/current/request")
     Call<Void> locationLoad3(@Header("authorization") String authorization , @Path("deviceId") String deviceId , @Body Map<String , String > temp_map);
 //    //디바이스 정보 수정
 //    @FormUrlEncoded

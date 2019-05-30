@@ -8,11 +8,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.view.Gravity;
 
 import com.sori.touchsori.R;
 import com.sori.touchsori.SoriApplication;
-import com.sori.touchsori.service.GyroService;
 import com.sori.touchsori.service.ServiceUtil;
 import com.sori.touchsori.service.TouchMessageService;
 import com.sori.touchsori.utill.Define;
@@ -118,9 +116,9 @@ public class EmergencyRecevier extends BroadcastReceiver {
 //
 
             //서비스 종료 시 Gyroscope event도 종료
-            if(EtcUtil.isGyroTouchServiceStopDevice() && (false == mApp.getIsSoundParserStop())) {
-                GyroService.getInstance(mContext).stopGyronfo();
-            }
+//            if(EtcUtil.isGyroTouchServiceStopDevice() && (false == mApp.getIsSoundParserStop())) {
+//                GyroService.getInstance(mContext).stopGyronfo();
+//            }
 
 //            // 미디어 버튼 서비스 종료
 //            intent = new Intent(mContext, MediaService.class);

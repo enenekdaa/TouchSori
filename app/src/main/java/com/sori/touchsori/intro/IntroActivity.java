@@ -63,7 +63,7 @@ import static com.sori.touchsori.utill.Define.URL_SERIAL;
 public class IntroActivity extends BaseActivity {
 
     private static final String TAG = IntroActivity.class.getSimpleName();
-    public static boolean firstLogin = false;
+    public boolean firstLogin = false;
     ImageView introImg;
 
     TelephonyManager tm;
@@ -82,13 +82,21 @@ public class IntroActivity extends BaseActivity {
         introImg = findViewById(R.id.intro_img);
 
      //   checkPermission();
+        firstLogin = utils.isFirstLogin();
         loginTp = utils.getLoginToken();
         deviceId = utils.getDeviceID();
+
+
+        utils.setIsFirstLogin(true);
 
         if (soriApplication.checkPermissionAll(this)) {
             ServiceUtil serviceUtil = new ServiceUtil();
             serviceUtil.startMonitorService(mContext);
-            initView();
+            soriApplication.setIsSoundPaserStop(false);
+            if (!firstLogin && loginTp.equals("")) {
+                Intent intent = new Intent(mContext , SignInActivity.class);
+                startActivity(intent);
+            }
 
         }
     }
@@ -133,7 +141,6 @@ public class IntroActivity extends BaseActivity {
     }
 
     private void initView() {
-
         tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         deviceObj.addProperty("phoneNo" , "01041381724");
         //  deviceObj.addProperty("phoneNo" , phoneNumber);
@@ -149,11 +156,11 @@ public class IntroActivity extends BaseActivity {
         deviceObj.addProperty("username" , deviceObj.get("phoneNo").getAsString() + deviceObj.get("imei").getAsString());
         deviceObj.addProperty("password" , deviceObj.get("username").getAsString());
 
+
         utils.setDeviceInfo(deviceObj.toString());
         deviceInfo.setObject(utils.getDeviceInfo());
 
-
-        userStateApi();
+     //   userStateApi();
 
 
 
@@ -235,15 +242,18 @@ public class IntroActivity extends BaseActivity {
                         utils.setDeviceID(deviceObj.get("deviceId").getAsString());
                         utils.saveLoginToken(result);
 
-                       serialRegist();
-                    }else{
-
-                        Intent intent = new Intent(IntroActivity.this , SignInActivity.class);
+                        Intent intent = new Intent(IntroActivity.this , MainActivity.class);
                         goMainAct(intent);
+                    }else{
+//                        Intent intent = new Intent(IntroActivity.this , SignInActivity.class);
+//                        goMainAct(intent);
                         try {
                             JSONObject jsonError = new JSONObject(response.errorBody().string());
                             message = jsonError.getString("message");
                             showMessage(message);
+
+                            System.exit(0);
+                            finish();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         } catch (IOException e) {
@@ -290,8 +300,8 @@ public class IntroActivity extends BaseActivity {
         utils.setRegistrated(true);
         utils.setSerialNumber(serialNumber);
 
-        Intent intent = new Intent(mContext , MainActivity.class);
-        goMainAct(intent);
+
+        userStateApi();
     }
 
     /**

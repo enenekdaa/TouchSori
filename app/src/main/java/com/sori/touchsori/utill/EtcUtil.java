@@ -48,17 +48,7 @@ public class EtcUtil {
     }
 
 
-    /**
-     * Gyroscope에 의해 움직임이 없는 경우 TouchService Stop을 해주는 단말을 리턴한다.
-     * @return
-     */
-    public static boolean isGyroTouchServiceStopDevice() {
-        //갤럭시6 엣지+, 갤럭시6 엣지, 갤럭시 6, 갤럭시 노트5
-//        if (Build.MODEL.contains("SM-G928") || Build.MODEL.contains("SM-G920") || Build.MODEL.contains("SM-G925") || Build.MODEL.contains("SM-N920") ) {
-//            return true;
-//        }
-        return false;
-    }
+
 
 
 

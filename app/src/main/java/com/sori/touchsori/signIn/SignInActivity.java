@@ -30,7 +30,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.sori.touchsori.intro.IntroActivity.firstLogin;
 
 public class SignInActivity extends BaseActivity implements View.OnClickListener {
 
@@ -179,15 +178,17 @@ public class SignInActivity extends BaseActivity implements View.OnClickListener
                     if (response.isSuccessful()) {
                         String deviceId = response.body().getDeviceId();
                         utils.setDeviceID(deviceId);
-
-                        goMain();
+                        utils.setIsFirstLogin(true);
+                        mCustomMainDialog.dismiss();
+                        finish();
                     } else {
-                        goMain();
                         try {
                             JSONObject jsonError = new JSONObject(response.errorBody().string());
                             message = jsonError.getString("message");
                             showMessage(message);
                             mCustomMainDialog.dismiss();
+                         //   System.exit(0);
+                            finish();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         } catch (IOException e) {
@@ -234,13 +235,10 @@ public class SignInActivity extends BaseActivity implements View.OnClickListener
                         utils.setDeviceInfo(deviceObj.toString());
                         utils.setDeviceID(deviceObj.get("deviceId").getAsString());
                         utils.saveLoginToken(result);
-                        firstLogin = true;
+                        utils.setIsFirstLogin(true);
                         finish();
                     } else {
-
-                        Intent intent = new Intent(SignInActivity.this, MainActivity.class);
-                        startActivity(intent);
-
+                        utils.setIsFirstLogin(true);
                         finish();
                         try {
                             JSONObject jsonError = new JSONObject(response.errorBody().string());

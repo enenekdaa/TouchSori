@@ -16,7 +16,7 @@ import com.sori.touchsori.signIn.SignInActivity;
 import com.sori.touchsori.utill.LogUtil;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener{
-
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     private ImageView mainSettingImg;
     private TextView mainAnsimTv;
@@ -67,6 +67,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         super.onResume();
         if (deviceObj != null && deviceObj.size() != 0){
             refreshToken();
+        }
+
+        if (soriApplication.isInitialized()) {
+            soriApplication.startTouchsoriService(TAG);
         }
 
     }

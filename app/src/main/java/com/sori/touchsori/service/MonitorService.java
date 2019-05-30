@@ -1,5 +1,6 @@
 package com.sori.touchsori.service;
 
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -98,7 +99,7 @@ public class MonitorService extends Service {
         // 안심귀가 설정 여부
 
       ///   안심귀가 시작 시간 알람 등록
-       //      mApp.registerEmergencyStartAlarm();
+      //  mApp.alarmForever();
 
         // 안심귀가 종료 시간 알람 등록
         //     mApp.registerEmergencyEndAlarm();
@@ -113,10 +114,12 @@ public class MonitorService extends Service {
                 case MONITOR_SERVICE_START: {
                     // Monotor ForegroundService 시작
 //                    setMonitorServiceNotification();
+                    startTouchsoriService();
                     break;
                 }
                 case MONITOR_SERVICE_STOP: {
 //                    stopForeground(true);
+                    stopForegroundNotification();
                     break;
                 }
                 default:
@@ -176,8 +179,7 @@ public class MonitorService extends Service {
         mApp = (SoriApplication) mContext;
 
         LogUtil.d(TAG, "startTouchsoriService() -> isInitialized : " + mApp.isInitialized());
-        // 터치소리 설정 확인
-        if (mApp.isInitialized()) {
+
             // 터치소리 서비스 중지 해제
             mApp.setIsServiceStop(false);
             LogUtil.d(TAG, "startTouchsoriService() -> getIsServiceStop() : " + mApp.getIsServiceStop());
@@ -193,9 +195,9 @@ public class MonitorService extends Service {
 
                 } else {
                     //서비스 종료 시 Gyroscope event도 종료
-                    if(EtcUtil.isGyroTouchServiceStopDevice() && (false == mApp.getIsSoundParserStop())) {
-                        GyroService.getInstance(mContext).stopGyronfo();
-                    }
+//                    if(EtcUtil.isGyroTouchServiceStopDevice() && (false == mApp.getIsSoundParserStop())) {
+//                        GyroService.getInstance(mContext).stopGyronfo();
+//                    }
 
                     // 터치소리 서비스 중지
                     Intent intent = new Intent(mContext, TouchService.class);
@@ -204,7 +206,7 @@ public class MonitorService extends Service {
                     mContext.startService(intent);
                 }
             }
-        }
+
     }
 
     /**

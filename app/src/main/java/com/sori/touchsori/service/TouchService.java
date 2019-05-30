@@ -310,38 +310,39 @@ public class TouchService extends Service {
                 }
                 break;
             }
-            case TOUCH_ACTION_AFTER_CAMERA: {
-                mediaPath = intent.getStringExtra("file_path");
-                resqutParser(SOUND_PARSE_HANDLE_EVENT_START, PARSE_TYPE_MEDIA);
-
-                // 마시멜루우 버전 이하이면 카메라 핸들러 시작
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) { // 롤리팝 (Ver.5.0)
-                    mCameraHandler.removeMessages(CAMERA_EVENT_START);      // 시작 메시지 중지
-                    mCameraHandler.removeMessages(CAMERA_EVENT_UPDATE);     // 업데이트 메시지 중지
-                    mCameraHandler.removeMessages(CAMERA_EVENT_STOP);       // 중지 메시지 중지
-                    mCameraHandler.sendEmptyMessage(CAMERA_EVENT_START);    // 시작 메시지 시작
-                } else {
-                    if (Build.MODEL.contains("SM-N750")) {
-                        mCameraHandler.removeMessages(CAMERA_EVENT_START);      // 시작 메시지 중지
-                        mCameraHandler.removeMessages(CAMERA_EVENT_UPDATE);     // 업데이트 메시지 중지
-                        mCameraHandler.removeMessages(CAMERA_EVENT_STOP);       // 중지 메시지 중지
-                        mCameraHandler.sendEmptyMessage(CAMERA_EVENT_START);    // 시작 메시지 시작
-                    }
-                }
-                break;
-            }
-            case TOUCH_ACTION_AFTER_CALL: {
-                resqutParser(SOUND_PARSE_HANDLE_EVENT_START, PARSE_TYPE_CALL);
-
-                mCallHandler.removeMessages(CALL_EVENT_START);      // 시작 메시지 중지
-                mCallHandler.removeMessages(CALL_EVENT_UPDATE);     // 업데이트 메시지 중지
-                mCallHandler.removeMessages(CALL_EVENT_STOP);       // 중지 메시지 중지
-                mCallHandler.sendEmptyMessage(CALL_EVENT_START);    // 시작 메시지 시작
-                break;
-            }
+//            case TOUCH_ACTION_AFTER_CAMERA: {
+//                mediaPath = intent.getStringExtra("file_path");
+//                resqutParser(SOUND_PARSE_HANDLE_EVENT_START, PARSE_TYPE_MEDIA);
+//
+//                // 마시멜루우 버전 이하이면 카메라 핸들러 시작
+//                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) { // 롤리팝 (Ver.5.0)
+//                    mCameraHandler.removeMessages(CAMERA_EVENT_START);      // 시작 메시지 중지
+//                    mCameraHandler.removeMessages(CAMERA_EVENT_UPDATE);     // 업데이트 메시지 중지
+//                    mCameraHandler.removeMessages(CAMERA_EVENT_STOP);       // 중지 메시지 중지
+//                    mCameraHandler.sendEmptyMessage(CAMERA_EVENT_START);    // 시작 메시지 시작
+//                } else {
+//                    if (Build.MODEL.contains("SM-N750")) {
+//                        mCameraHandler.removeMessages(CAMERA_EVENT_START);      // 시작 메시지 중지
+//                        mCameraHandler.removeMessages(CAMERA_EVENT_UPDATE);     // 업데이트 메시지 중지
+//                        mCameraHandler.removeMessages(CAMERA_EVENT_STOP);       // 중지 메시지 중지
+//                        mCameraHandler.sendEmptyMessage(CAMERA_EVENT_START);    // 시작 메시지 시작
+//                    }
+//                }
+//                break;
+//            }
+//            case TOUCH_ACTION_AFTER_CALL: {
+//                resqutParser(SOUND_PARSE_HANDLE_EVENT_START, PARSE_TYPE_CALL);
+//
+//                mCallHandler.removeMessages(CALL_EVENT_START);      // 시작 메시지 중지
+//                mCallHandler.removeMessages(CALL_EVENT_UPDATE);     // 업데이트 메시지 중지
+//                mCallHandler.removeMessages(CALL_EVENT_STOP);       // 중지 메시지 중지
+//                mCallHandler.sendEmptyMessage(CALL_EVENT_START);    // 시작 메시지 시작
+//                break;
+//            }
         }
         return START_STICKY;
     }
+
 
     @Override
     public void onDestroy() {
@@ -429,78 +430,78 @@ public class TouchService extends Service {
             alarmManager.set(AlarmManager.RTC_WAKEUP,  firstTime, pendingIntent);
         }
     }
-
-    /**
-     * 카메라 핸들러
-     */
-    private final int CAMERA_EVENT_START = 1;   // 카메라 이벤트 시작
-    private final int CAMERA_EVENT_UPDATE = 2;  // 카메라 작동 이벤트 시간 업데이트
-    private final int CAMERA_EVENT_STOP = 3;    // 카메라 이벤트 중지
-
-    private int camera_time_count;
-    private Handler mCameraHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case CAMERA_EVENT_START:
-                    camera_time_count = 11;
-                    this.sendEmptyMessage(CAMERA_EVENT_UPDATE);
-                    break;
-                case CAMERA_EVENT_UPDATE:
-                    if (camera_time_count == -1) return;
-                    camera_time_count--;
-                    // TODO 타이머 테스트
-//                    ToastUtil.show(mContext, "::: " + camera_time_count + " :::");
-
-                    if (camera_time_count > 0) {
-                        this.sendEmptyMessageDelayed(CAMERA_EVENT_UPDATE, 1000);
-                    } else {
-                        this.sendEmptyMessage(CAMERA_EVENT_STOP);
-                    }
-                    break;
-                case CAMERA_EVENT_STOP: {
-                    startEmergencyService("CAMERA_EVENT_STOP");
-                    break;
-                }
-            }
-        }
-    };
-
-    /**
-     * 통화 종료 핸들러
-     */
-    private final int CALL_EVENT_START = 1;   // 통화종료 이벤트 시작
-    private final int CALL_EVENT_UPDATE = 2;  // 통화종료 이벤트 시간 업데이트
-    private final int CALL_EVENT_STOP = 3;    // 통화종료 이벤트 중지
-
-    private int call_time_count;
-    private Handler mCallHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case CALL_EVENT_START:
-                    call_time_count = 11;
-                    this.sendEmptyMessage(CALL_EVENT_UPDATE);
-                    break;
-                case CALL_EVENT_UPDATE:
-                    if (call_time_count == -1) return;
-                    call_time_count--;
-
-                    // TODO 타이머 테스트
-//                    ToastUtil.show(mContext, "::: " + call_time_count + " :::");
-                    if (call_time_count > 0) {
-                        this.sendEmptyMessageDelayed(CALL_EVENT_UPDATE, 1000);
-                    } else {
-                        this.sendEmptyMessage(CALL_EVENT_STOP);
-                    }
-                    break;
-                case CALL_EVENT_STOP: {
-                    startEmergencyService("CALL_EVENT_STOP");
-                    break;
-                }
-            }
-        }
-    };
+//
+//    /**
+//     * 카메라 핸들러
+//     */
+//    private final int CAMERA_EVENT_START = 1;   // 카메라 이벤트 시작
+//    private final int CAMERA_EVENT_UPDATE = 2;  // 카메라 작동 이벤트 시간 업데이트
+//    private final int CAMERA_EVENT_STOP = 3;    // 카메라 이벤트 중지
+//
+//    private int camera_time_count;
+//    private Handler mCameraHandler = new Handler() {
+//        @Override
+//        public void handleMessage(Message msg) {
+//            switch (msg.what) {
+//                case CAMERA_EVENT_START:
+//                    camera_time_count = 11;
+//                    this.sendEmptyMessage(CAMERA_EVENT_UPDATE);
+//                    break;
+//                case CAMERA_EVENT_UPDATE:
+//                    if (camera_time_count == -1) return;
+//                    camera_time_count--;
+//                    // TODO 타이머 테스트
+////                    ToastUtil.show(mContext, "::: " + camera_time_count + " :::");
+//
+//                    if (camera_time_count > 0) {
+//                        this.sendEmptyMessageDelayed(CAMERA_EVENT_UPDATE, 1000);
+//                    } else {
+//                        this.sendEmptyMessage(CAMERA_EVENT_STOP);
+//                    }
+//                    break;
+//                case CAMERA_EVENT_STOP: {
+//                    startEmergencyService("CAMERA_EVENT_STOP");
+//                    break;
+//                }
+//            }
+//        }
+//    };
+//
+//    /**
+//     * 통화 종료 핸들러
+//     */
+//    private final int CALL_EVENT_START = 1;   // 통화종료 이벤트 시작
+//    private final int CALL_EVENT_UPDATE = 2;  // 통화종료 이벤트 시간 업데이트
+//    private final int CALL_EVENT_STOP = 3;    // 통화종료 이벤트 중지
+//
+//    private int call_time_count;
+//    private Handler mCallHandler = new Handler() {
+//        @Override
+//        public void handleMessage(Message msg) {
+//            switch (msg.what) {
+//                case CALL_EVENT_START:
+//                    call_time_count = 11;
+//                    this.sendEmptyMessage(CALL_EVENT_UPDATE);
+//                    break;
+//                case CALL_EVENT_UPDATE:
+//                    if (call_time_count == -1) return;
+//                    call_time_count--;
+//
+//                    // TODO 타이머 테스트
+////                    ToastUtil.show(mContext, "::: " + call_time_count + " :::");
+//                    if (call_time_count > 0) {
+//                        this.sendEmptyMessageDelayed(CALL_EVENT_UPDATE, 1000);
+//                    } else {
+//                        this.sendEmptyMessage(CALL_EVENT_STOP);
+//                    }
+//                    break;
+//                case CALL_EVENT_STOP: {
+//                    startEmergencyService("CALL_EVENT_STOP");
+//                    break;
+//                }
+//            }
+//        }
+//    };
 
     /**
      * 서비스 시작 Notification
@@ -618,9 +619,9 @@ public class TouchService extends Service {
 
         stopForeground(true);
 
-        // 모니터링 서비스 시작
-//        ServiceUtil serviceUtil = new ServiceUtil();
-//        serviceUtil.startMonitorService(mContext);
+    //     모니터링 서비스 시작
+        ServiceUtil serviceUtil = new ServiceUtil();
+        serviceUtil.startMonitorService(mContext);
 
     }
 

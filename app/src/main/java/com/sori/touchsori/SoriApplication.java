@@ -2,15 +2,17 @@ package com.sori.touchsori;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.Application;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.google.gson.JsonArray;
@@ -18,10 +20,11 @@ import com.google.gson.JsonElement;
 import com.sori.touchsori.api.ApiUtil;
 import com.sori.touchsori.data.ApiContactListData;
 import com.sori.touchsori.data.ApiContactsData;
-import com.sori.touchsori.search.SearchActivity;
+import com.sori.touchsori.dialog.AlertDialogFinal;
+import com.sori.touchsori.intro.IntroActivity;
+import com.sori.touchsori.receiver.EmergencyRecevier;
 import com.sori.touchsori.service.TouchService;
 import com.sori.touchsori.utill.Define;
-import com.sori.touchsori.utill.EtcUtil;
 import com.sori.touchsori.utill.LogUtil;
 import com.sori.touchsori.utill.TypefaceUtil;
 import com.sori.touchsori.utill.Utils;
@@ -30,13 +33,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static android.app.PendingIntent.getBroadcast;
+import static com.sori.touchsori.utill.Define.ALARM_ID_EMERGENCY_START;
 import static com.sori.touchsori.utill.Define.TOUCH_ACTION_EMERGNECY;
 
 public class SoriApplication extends Application {
@@ -51,10 +56,10 @@ public class SoriApplication extends Application {
     private boolean isSoundParserStop = false;                                       // SoundParse Stop
     private int locationCount = -1;                                                 // 위치정보 발송 카운트
     private boolean isMessageSending = false;                                       // SMS 전송 중인지 확인하는 플래그
-    private boolean isGyroStropService = false;                                     // Gyroscope에 의한 TouchService  종료 여부
+
     // 서비스 중지 플래그
     private boolean isServiceStop = false;
-    private static boolean bInitialized = false;                            // 초기화 여부
+    private static boolean bInitialized = true;                            // 초기화 여부
 
     private final String[] permissions = new String[]{                           // 퍼미션
             Manifest.permission.ACCESS_FINE_LOCATION,
@@ -141,21 +146,18 @@ public class SoriApplication extends Application {
         Toast.makeText(mContext , message , Toast.LENGTH_SHORT).show();
     }
 
-    /**
-     * Gyroscope에 의해 TouchService가 종료되었는지 셋팅한다.
-     * @param isStopService
-     */
-    public void setIsGyroStopService(boolean isStopService) {
-        isGyroStropService = isStopService;
+
+    public void onAlertDialog(String message) {
+        Intent alertIntent = new Intent(this, AlertDialogFinal.class);
+        alertIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+        alertIntent.putExtra("message", message);
+
+        startActivity(alertIntent);
     }
 
-    /**
-     *  Gyroscope에 의해 TouchService가 종료되었는지 여부를 리턴한다.
-     * @return
-     */
-    public boolean isGyroStopService() {
-        return isGyroStropService;
-    }
+
+
+
 
 
     /**
@@ -167,6 +169,11 @@ public class SoriApplication extends Application {
         return isSoundParserStop;
     }
 
+    public void setIsSoundPaserStop(boolean isSoundParserStop) {
+        this.isSoundParserStop = isSoundParserStop;
+    }
+
+
 
     /**
      * 서비스 중지
@@ -175,6 +182,12 @@ public class SoriApplication extends Application {
      */
     public boolean getIsServiceStop() {
         return isServiceStop;
+    }
+    /**
+     * 서비스 중지 설정
+     */
+    public void setIsServiceStop(boolean isStop) {
+        this.isServiceStop = isStop;
     }
 
 
@@ -186,12 +199,6 @@ public class SoriApplication extends Application {
         return bInitialized;
     }
 
-    /**
-     * 서비스 중지 설정
-     */
-    public void setIsServiceStop(boolean isStop) {
-        this.isServiceStop = isStop;
-    }
 
     /**
      * 위치정보 카운트 설정
@@ -293,7 +300,40 @@ public class SoriApplication extends Application {
         return startNow;
     }
 
-    PendingIntent safetyZonePendingIntent;
+    // 재시작 ... 무한
+    private PendingIntent pi_emergency_start;
+    public void alarmForever() {
+        Intent intent = new Intent(mContext, EmergencyRecevier.class);
+        intent.setAction(Define.ACTION_EMERGENCY_TIME_START);
+        pi_emergency_start = getBroadcast(
+                mContext,
+                ALARM_ID_EMERGENCY_START,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        long currentTime = System.currentTimeMillis() + 3000;
+        long now = System.currentTimeMillis();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(currentTime);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        if (currentTime < now) {
+            calendar.add(Calendar.DAY_OF_YEAR, 1);
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {               // 마시멜로우 (Ver.6.0 이상)
+//            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pi_emergency_start);
+            long triggerTime = System.currentTimeMillis() + Math.abs(System.currentTimeMillis() - calendar.getTimeInMillis());
+            AlarmManager.AlarmClockInfo info = new AlarmManager.AlarmClockInfo(triggerTime, pi_emergency_start);
+            alarmManager.setAlarmClock(info, pi_emergency_start);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {   // 키켓 (Ver.4.4 이상)
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pi_emergency_start);
+        } else {                                                            // 기타
+            alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pi_emergency_start);
+        }
+    }
 
     /**
      * TouchSerivce를 시작한다.

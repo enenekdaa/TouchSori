@@ -1,21 +1,21 @@
 package com.sori.touchsori.base;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.JsonObject;
 import com.sori.touchsori.SoriApplication;
+import com.sori.touchsori.dialog.AlertDialogFinal;
 import com.sori.touchsori.api.ApiUtil;
 import com.sori.touchsori.data.ApiAuthorizationData;
 import com.sori.touchsori.signIn.DeviceInfo;
-import com.sori.touchsori.utill.TypefaceUtil;
+import com.sori.touchsori.signIn.SignInActivity;
 import com.sori.touchsori.utill.Utils;
 
 import org.json.JSONException;
@@ -93,7 +93,6 @@ public class BaseActivity extends AppCompatActivity {
         Toast.makeText(mContext , message , Toast.LENGTH_SHORT).show();
     }
 
-
     String refreshToken;
 
     /**
@@ -111,8 +110,20 @@ public class BaseActivity extends AppCompatActivity {
                     }else {
                         try {
                             String message;
+                            String code;
                             JSONObject jsonError = new JSONObject(response.errorBody().string());
-                            message = jsonError.getString("message");
+                            code = jsonError.getString("code");
+                            if (code.equals("1201")){
+                                refreshToken();
+                            }else {
+                                Intent intent = new Intent(mContext , SignInActivity.class);
+                                startActivity(intent);
+                            }
+                            if (jsonError.isNull(jsonError.getString("message"))) {
+                                message = "계정이 조회되지 않습니다.";
+                            }else {
+                                message = jsonError.getString("message");
+                            }
                             Toast.makeText(mContext , message, Toast.LENGTH_SHORT);
                         } catch (JSONException e) {
                             e.printStackTrace();

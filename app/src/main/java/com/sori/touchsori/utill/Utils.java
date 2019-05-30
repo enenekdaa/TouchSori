@@ -206,6 +206,19 @@ public class Utils {
 
 
     /**
+     * 최초 로그인 체크
+     */
+    public void setIsFirstLogin(boolean isFirstLogin) {
+        editor.putBoolean("first" , isFirstLogin);
+        editor.commit();
+    }
+
+    public boolean isFirstLogin() {
+        return sharedPreferences.getBoolean("first", false);
+    }
+
+
+    /**
      * 안심귀가 종료 시간
      */
     public long getTimeEnd() {

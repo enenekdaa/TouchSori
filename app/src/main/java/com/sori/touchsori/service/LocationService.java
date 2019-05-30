@@ -8,8 +8,12 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.os.PowerManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
@@ -17,13 +21,30 @@ import android.support.v4.app.NotificationCompat;
 import com.sori.touchsori.SoriApplication;
 import com.sori.touchsori.intro.IntroActivity;
 import com.sori.touchsori.utill.EtcUtil;
+import com.sori.touchsori.utill.LocationInfo;
 import com.sori.touchsori.utill.LogUtil;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class LocationService extends Service {
     private static final String TAG = LocationService.class.getSimpleName();
     private SoriApplication mApp;                                      // 전역 (Application) 변수
     private Context mContext;                                               // 콘텍스트
+
+    private LocationInfo mLocation;
+    private Location location;
+    private String receiver_hp;                                                     // 요청자 휴대 전화번호
+    private int mType;                                                              // 타입
+
+    private int count  = 0;                                                               //3번호출...
 
     @Nullable
     @Override
@@ -40,7 +61,7 @@ public class LocationService extends Service {
         mContext = getApplicationContext();
         // 전역 (Application) 변수
         mApp = (SoriApplication) mContext;
-
+        count = 0;
         super.onCreate();
     }
 
@@ -49,6 +70,8 @@ public class LocationService extends Service {
         LogUtil.i(TAG, "onStartCommand() -> Start !!!");
 
         if (intent == null) return START_REDELIVER_INTENT;
+
+        RequestSendLocationTask(count);
         return START_STICKY;
     }
 
@@ -63,14 +86,104 @@ public class LocationService extends Service {
    //     mApp.setMessageSending(false);
 
         PowerManager pm = (PowerManager)getSystemService(Context.POWER_SERVICE);
-        if(EtcUtil.isGyroTouchServiceStopDevice() && (false == pm.isInteractive())) {
-            GyroService.getInstance(mContext).startGyroInfo();
-        }
+//        if(EtcUtil.isGyroTouchServiceStopDevice() && (false == pm.isInteractive())) {
+//            GyroService.getInstance(mContext).startGyroInfo();
+//        }
 
         // 터치소리 서비스 시작
         mApp.startTouchsoriService(TAG);
         super.onDestroy();
     }
+
+    /**
+     * 위치정보 전송 AsyncTask
+     */
+    private void RequestSendLocationTask (final int flag3){
+
+        // 전역 (Application) 변수
+        if (mApp == null) mApp = (SoriApplication) mContext;
+
+
+        mApp.apiUtil.locationCall3().enqueue(new Callback<Void>() {
+            int flagCount = flag3;
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    flagCount++;
+                    LogUtil.d(TAG , "################### flagCount : : : " + flagCount + "////" + count);
+                    if (flagCount > 2) {
+                        mApp.showMessage("현재위치를 전송하였습니다. ");
+                        mLocationHandler.removeMessages(LOCATION_EVENT_START);
+                        mLocationHandler.removeMessages(LOCATION_EVENT_UPDATE);
+                        stopForeground(true);
+                    }else {
+                        RequestSendLocationTask(flagCount);
+                        return;
+                    }
+
+
+
+                    stopSelf();
+                }else {
+                    try {
+                        String message;
+                        String code;
+                        JSONObject jsonError = new JSONObject(response.errorBody().string());
+                        code = jsonError.getString("code");
+                        message = jsonError.getString("message");
+                        mApp.showMessage(message);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+
+    }
+
+    private final int LOCATION_EVENT_START = 0;
+    private final int LOCATION_EVENT_UPDATE = 1;
+
+    private int time_count = 6;
+    private Handler mLocationHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case LOCATION_EVENT_START:
+                    mLocation = LocationInfo.getInstance(mContext);
+                    mLocation.updateLocationInfo();
+                    this.sendEmptyMessageDelayed(LOCATION_EVENT_UPDATE, 1000);
+                    break;
+                case LOCATION_EVENT_UPDATE:
+                    time_count--;
+                    if (time_count > 0) {
+                        this.sendEmptyMessageDelayed(LOCATION_EVENT_UPDATE, 1000);
+                    } else {
+                        if (mLocation != null) mLocation.stopLocationInfo();
+                        location = mLocation.getCurrentLocation();
+
+                        new Thread() {
+                            @Override
+                            public void run() {
+                                if(12 == mType) {
+                                    RequestSendLocationTask(count);
+                                }
+                            }
+                        }.start();
+
+                    }
+                    break;
+            }
+        }
+    };
+
 
 //    /**
 //     * 로컬 알람 등록

@@ -13,6 +13,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.Message;
 import android.os.PowerManager;
 import android.telephony.SmsManager;
@@ -78,6 +79,7 @@ public class TouchMessageService extends Service {
         int cnt = numList.size();
         LogUtil.d(TAG, "onStartCommand() -> cnt : " + cnt);
         if (cnt > 0) {
+
             if (mApp.utils.getSiren().matches("on")) { // 사이렌 사용
                 MediaPlayer mediaPlayer = MediaPlayer.create(mContext, R.raw.siren);
                 mediaPlayer.setLooping(false);
@@ -93,10 +95,12 @@ public class TouchMessageService extends Service {
             } else {
                 mApp.showMessage("media completion");
             }
+            // 팝업 ...
+        }else {
+            mApp.showMessage("긴급 수신자 설정이 되있지않습니다 .");
         }
         if (MSG_SERVICE_ACTION_LOCATION.equals(action)) {
-            if (mApp.getLocationCount() > mApp.getLocationCount()
-                    || mApp.getLocationCount() == -1) {
+            if (mApp.getLocationCount() == -1) {
                 mApp.setLocationCount(-1);
 
                 // 위치정보 전송 알람 해제
@@ -109,9 +113,9 @@ public class TouchMessageService extends Service {
 //                startTouchsoriService();
                 mApp.startTouchsoriService(TAG);
                 PowerManager pm = (PowerManager)getSystemService(Context.POWER_SERVICE);
-                if(EtcUtil.isGyroTouchServiceStopDevice() && (false == pm.isInteractive())) {
-                    GyroService.getInstance(mContext).startGyroInfo();
-                }
+//                if(EtcUtil.isGyroTouchServiceStopDevice() && (false == pm.isInteractive())) {
+//                    GyroService.getInstance(mContext).startGyroInfo();
+//                }
             } else {
                 if (cnt > 0) {
                     mLocationHandler.sendEmptyMessage(LOCATION_UPDATE_START);
@@ -128,11 +132,13 @@ public class TouchMessageService extends Service {
 //                    startTouchsoriService();
                     mApp.startTouchsoriService(TAG);
                     PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-                    if(EtcUtil.isGyroTouchServiceStopDevice() && (false == pm.isInteractive())) {
-                        GyroService.getInstance(mContext).startGyroInfo();
-                    }
+//                    if(EtcUtil.isGyroTouchServiceStopDevice() && (false == pm.isInteractive())) {
+//                        GyroService.getInstance(mContext).startGyroInfo();
+//                    }
                 }
             }
+        }else if (MSG_SERVICE_ACTION_EMERGENCY.equals(action)) {
+            mLocationHandler.sendEmptyMessage(LOCATION_SEND_START);
         }
         stopSelf();
 
@@ -146,6 +152,7 @@ public class TouchMessageService extends Service {
         @Override
         protected Boolean doInBackground(ArrayList<String>... params) {
             boolean isSuccess = false;
+            Looper.prepare();
             try {
                 LocationInfo mLocation = LocationInfo.getInstance(mContext);
                 Location location = mLocation.getCurrentLocation();
@@ -177,7 +184,17 @@ public class TouchMessageService extends Service {
             LogUtil.d(TAG, "onPostExecute() getLocationCount : " + mApp.getLocationCount());
             //     LogUtil.d(TAG, "onPostExecute() getEmergencyLocationCount : " + mApp.getConfig().getEmergencyLocationCount());
             if (mApp.getLocationCount() != -1) {
-                registerLocationAlarm();
+                if (result.equals(true)) {
+                    mApp.onAlertDialog("위치 전송이 발송되었습니다.");
+                }else {
+                    mApp.onAlertDialog("위치 전송이 실패하였습니다.");
+                }
+                Intent locationIntent = new Intent(mContext, LocationService.class);
+                mContext.startService(locationIntent);
+
+                // 터치소리 서비스 시작
+                mApp.startTouchsoriService(TAG);
+             //   registerLocationAlarm();
             } else {
                 mApp.setLocationCount(-1);
                 // 노티피케이션 해제
@@ -190,9 +207,9 @@ public class TouchMessageService extends Service {
                 mApp.startTouchsoriService(TAG);
 
                 PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-                if(EtcUtil.isGyroTouchServiceStopDevice() && (false == pm.isInteractive())) {
-                    GyroService.getInstance(mContext).startGyroInfo();
-                }
+//                if(EtcUtil.isGyroTouchServiceStopDevice() && (false == pm.isInteractive())) {
+//                    GyroService.getInstance(mContext).startGyroInfo();
+//                }
             }
         }
     }
@@ -244,11 +261,11 @@ public class TouchMessageService extends Service {
 //        if (hashMap == null) app.getConfig().initEmergencyCountry();
 
         //      String code = hashMap.get(Define.KEY_COUNTRY_CODE);
-        String code = "082";
-        if (toNumber.startsWith("0")) {
-            toNumber = toNumber.substring(1);
-        }
-        toNumber = "+" + code + toNumber;
+//        String code = "082";
+//        if (toNumber.startsWith("0")) {
+//            toNumber = toNumber.substring(1);
+//        }
+//        toNumber = "+" + code + toNumber;
 
         ArrayList<String> parts = smsManager.divideMessage(msg);
         smsManager.sendMultipartTextMessage(toNumber, null, parts, null, null);
@@ -318,10 +335,13 @@ public class TouchMessageService extends Service {
 
                 case LOCATION_SEND_START:
                 //    TouchConfig.EmergencyInfo emergencyInfo = mApp.getConfig().getEmergencyInfo();
+
                     SendLocationTask sendLocationTask = new SendLocationTask();
                     sendLocationTask.execute(mApp.utils.getSosList());
+                 //   mApp.startTouchsoriService(TAG);
                     break;
             }
+
         }
     };
 
