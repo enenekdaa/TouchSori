@@ -9,7 +9,9 @@ import android.widget.TextView;
 
 import com.sori.touchsori.R;
 import com.sori.touchsori.base.BaseActivity;
+import com.sori.touchsori.intro.IntroActivity;
 import com.sori.touchsori.utill.CustomToolbar;
+import com.sori.touchsori.utill.ErrorCode;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,7 +50,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
 
         countyTv = findViewById(R.id.setting_country_tv);
         snumberTv = findViewById(R.id.setting_snumber_tv);
-        sNumber = deviceObj.get("serialNo").getAsString();
+        sNumber = utils.getSerialNumber();
         snumberTv.setText(sNumber);
         countryLl.setOnClickListener(this);
         //snumberLl.setOnClickListener(this);
@@ -84,9 +86,29 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         if (resultCode == RESULT_OK) {
             if (requestCode == SNUMBER_REQUEST_CODE) {
                 snumberTv.setText(data.getStringExtra("sNumber"));
+                String serialNumber = snumberTv.getText().toString();
+
+                int error = utils.checkValidationLongSerial(serialNumber);
+                switch (error) {
+
+                    case ErrorCode.ERROR_EMPTY_SERIAL:
+                        showMessage("serial error !");
+                        return;
+                    case ErrorCode.ERROR_LENGTH_SERIAL:
+                        showMessage("serial error !");
+                        return;
+                    case ErrorCode.ERROR_INVALID_SERIAL:
+                        showMessage("serial error !");
+                        return;
+                    default:
+                        break;
+                }
 
                 deviceObj.addProperty("serialNo", snumberTv.getText().toString());
                 utils.setDeviceInfo(deviceObj.toString());
+                utils.setSerialNumber(serialNumber);
+
+                new IntroActivity().serialRegist();
             //    updateSNumberApi();
 
             }

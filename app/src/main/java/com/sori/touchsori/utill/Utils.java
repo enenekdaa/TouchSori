@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.os.Build;
+import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.Window;
@@ -287,5 +288,48 @@ public class Utils {
         return resultStr;
     }
 
+
+
+    /**
+     * 시리얼 넘버 유효성 체크 (9자리)
+     *
+     * @param serialNumber
+     * @return
+     */
+    public static int checkValidationLongSerial(String serialNumber) {
+        int error = ErrorCode.ERROR_NONE;
+        if (StringUtil.isEmpty(serialNumber)) return ErrorCode.ERROR_EMPTY_SERIAL;
+        if (serialNumber.length() == 6) return ErrorCode.ERROR_LENGTH_SHORT_SERIAL;
+        if (serialNumber.length() != 9) return ErrorCode.ERROR_LENGTH_SERIAL;
+        if (!checkLongSerialNumber(serialNumber)) return ErrorCode.ERROR_INVALID_SERIAL;
+        return error;
+    }
+
+    /**
+     * 시리얼 넘버 형식 체크 (9자리)
+     *
+     * @param serialNumber
+     * @return
+     */
+    public static boolean checkLongSerialNumber(String serialNumber) {
+        String[] number = new String[9];
+        for (int i = 0; i < serialNumber.length(); i++) {
+            number[i] = String.valueOf(serialNumber.charAt(i));
+        }
+        if (!StringUtil.isEnglish(number[0])) return false;
+        if (!StringUtil.isNumber(number[1])) return false;
+        if (!StringUtil.isNumber(number[2])) return false;
+        if (!StringUtil.isNumber(number[3])) return false;
+        if (!StringUtil.isNumber(number[4])) return false;
+        if (!StringUtil.isNumber(number[5])) return false;
+        if (!StringUtil.isEnglish(number[6])) return false;
+        if (!(StringUtil.isNumber(number[7]) || StringUtil.isEnglish(number[7]))) return false;
+        if (!StringUtil.isNumber(number[8])) return false;
+
+        for (int i = 0; i < number.length; i++) {
+            Log.d(": : : : : : " , " number[" + i + "] : " + number[i]);
+        }
+        return true;
+    }
 
 }

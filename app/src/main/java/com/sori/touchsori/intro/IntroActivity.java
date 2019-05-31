@@ -28,6 +28,7 @@ import com.sori.touchsori.service.ServiceUtil;
 import com.sori.touchsori.signIn.DeviceInfo;
 import com.sori.touchsori.signIn.SignInActivity;
 import com.sori.touchsori.utill.CountryISOUtil;
+import com.sori.touchsori.utill.Define;
 import com.sori.touchsori.utill.LogUtil;
 
 import org.json.JSONException;
@@ -57,6 +58,7 @@ import static com.sori.touchsori.utill.Define.KEY_SAVED_SERIAL_NUMBER;
 import static com.sori.touchsori.utill.Define.KEY_SERIAL_NUMBER;
 import static com.sori.touchsori.utill.Define.KEY_TYPE;
 import static com.sori.touchsori.utill.Define.KEY_UPDATE_DATE;
+import static com.sori.touchsori.utill.Define.MONITOR_SERVICE_STOP;
 import static com.sori.touchsori.utill.Define.SERVER_URL;
 import static com.sori.touchsori.utill.Define.URL_SERIAL;
 
@@ -91,8 +93,17 @@ public class IntroActivity extends BaseActivity {
 
         if (soriApplication.checkPermissionAll(this)) {
             ServiceUtil serviceUtil = new ServiceUtil();
-            serviceUtil.startMonitorService(mContext);
-            soriApplication.setIsSoundPaserStop(false);
+            if (utils.getAlarmStatus().equals("on")) {
+
+                serviceUtil.startMonitorService(mContext);
+                soriApplication.setIsInitialized(true);
+                soriApplication.setIsSoundPaserStop(false);
+            }else {
+                serviceUtil.stopMonitorService(mContext);
+                soriApplication.setIsInitialized(false);
+                soriApplication.setIsSoundPaserStop(true);
+             //   serviceUtil.stopTouchSoriService(mContext , Define.TOUCH_SERVICE_TYPE_END , "start" , Define.TOUCH_SERVICE_TYPE_END);
+            }
             if (!firstLogin && loginTp.equals("")) {
                 Intent intent = new Intent(mContext , SignInActivity.class);
                 startActivity(intent);

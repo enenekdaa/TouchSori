@@ -26,6 +26,7 @@ import com.sori.touchsori.dialog.CustomAnsimUpdateDialog;
 import com.sori.touchsori.dialog.CustomCheckBoxDialog;
 import com.sori.touchsori.dialog.CustomEditTextDialog;
 import com.sori.touchsori.search.SearchActivity;
+import com.sori.touchsori.service.ServiceUtil;
 import com.sori.touchsori.utill.CustomToolbar;
 
 import org.json.JSONException;
@@ -134,14 +135,24 @@ public class AnsimActivity extends BaseActivity implements View.OnClickListener{
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 switch (buttonView.getId()) {
                     case R.id.ansim_alarm_btn : {
+                        ServiceUtil serviceUtil = new ServiceUtil();
                         if (isChecked) {
                             alarmState = "on";
                             utils.saveAlaramStatus("on");
+                            serviceUtil.startMonitorService(mContext);
+
+                            soriApplication.setIsInitialized(true);
+                            soriApplication.setIsSoundPaserStop(false);
                         //    getAlarmOnOffApi();
                         }else {
                             alarmState = "off";
                         //    getAlarmOnOffApi();
                             utils.saveAlaramStatus("off");
+
+                            serviceUtil.stopMonitorService(mContext);
+
+                            soriApplication.setIsInitialized(false);
+                            soriApplication.setIsSoundPaserStop(true);
                         }
                         break;
                     }

@@ -199,6 +199,14 @@ public class SoriApplication extends Application {
         return bInitialized;
     }
 
+    /**
+     * 초기화 여부
+     * @return
+     */
+    public void setIsInitialized(boolean value) {
+        bInitialized = value;
+    }
+
 
     /**
      * 위치정보 카운트 설정

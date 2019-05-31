@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Build;
 
 import static com.sori.touchsori.utill.Define.MONITOR_SERVICE_START;
+import static com.sori.touchsori.utill.Define.MONITOR_SERVICE_STOP;
 
 /**
  * Created by Dongnam on 2017. 6. 15..
@@ -18,6 +19,7 @@ public class ServiceUtil {
 
     /**
      * 서비스 실행 유무 확인
+     *
      * @param context
      * @param serviceName
      * @return
@@ -35,24 +37,24 @@ public class ServiceUtil {
     public void startMonitorService(Context context) {
         Intent intent = new Intent(context, MonitorService.class);
         intent.setAction(MONITOR_SERVICE_START);
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            context.startForegroundService(intent);
-//       } else {
-        //           context.startService(intent);
-        //       }
-        context.startService(intent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(intent);
+        } else {
+            context.startService(intent);
+        }
+
     }
 
-//    public void stopMonitorService(Context context) {
-//        // 모니터링 서비스 중지
-//        Intent intent = new Intent(context, MonitorService.class);
-//        intent.setAction(MONITOR_SERVICE_STOP);
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            context.startForegroundService(intent);
-//        } else {
-//            context.startService(intent);
-//        }
-//    }
+    public void stopMonitorService(Context context) {
+        // 모니터링 서비스 중지
+        Intent intent = new Intent(context, MonitorService.class);
+        intent.setAction(MONITOR_SERVICE_STOP);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(intent);
+        } else {
+            context.startService(intent);
+        }
+    }
 
     public void startTouchSoriService(Context context, String action, String extraName, int extraValue) {
         Intent intent = new Intent(context, TouchService.class);
