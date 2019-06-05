@@ -89,22 +89,39 @@ public class IntroActivity extends BaseActivity {
         deviceId = utils.getDeviceID();
 
 
-        utils.setIsFirstLogin(true);
+
 
         if (soriApplication.checkPermissionAll(this)) {
-            ServiceUtil serviceUtil = new ServiceUtil();
-            if (utils.getAlarmStatus().equals("on")) {
 
-                serviceUtil.startMonitorService(mContext);
-                soriApplication.setIsInitialized(true);
-                soriApplication.setIsSoundPaserStop(false);
+            ServiceUtil serviceUtil = new ServiceUtil();
+            boolean isRunningTouchService = ServiceUtil.isServiceRunning(mContext, "com.sori.touchsori.service");
+            if (isRunningTouchService) {
+                if (utils.getAlarmStatus().equals("on")) {
+
+                    serviceUtil.startMonitorService(mContext);
+                    soriApplication.setIsInitialized(true);
+                    soriApplication.setIsSoundPaserStop(false);
+                }else {
+                    serviceUtil.stopMonitorService(mContext);
+                    soriApplication.setIsInitialized(false);
+                    soriApplication.setIsSoundPaserStop(true);
+
+                }
             }else {
-                serviceUtil.stopMonitorService(mContext);
-                soriApplication.setIsInitialized(false);
-                soriApplication.setIsSoundPaserStop(true);
-             //   serviceUtil.stopTouchSoriService(mContext , Define.TOUCH_SERVICE_TYPE_END , "start" , Define.TOUCH_SERVICE_TYPE_END);
+                if (utils.getAlarmStatus().equals("on")) {
+
+                    serviceUtil.startMonitorService(mContext);
+                    soriApplication.setIsInitialized(true);
+                    soriApplication.setIsSoundPaserStop(false);
+                }else {
+                    serviceUtil.stopMonitorService(mContext);
+                    soriApplication.setIsInitialized(false);
+                    soriApplication.setIsSoundPaserStop(true);
+
+                }
             }
-            if (!firstLogin && loginTp.equals("")) {
+
+            if (firstLogin && loginTp.equals("")) {
                 Intent intent = new Intent(mContext , SignInActivity.class);
                 startActivity(intent);
             }
@@ -141,6 +158,9 @@ public class IntroActivity extends BaseActivity {
 
             if (complete) {
                 // 인트로 화면 초기화
+                utils.setIsFirstLogin(true);
+                firstLogin = true;
+
                 initView();
             } else {
                 // 서비스 종료
@@ -172,7 +192,10 @@ public class IntroActivity extends BaseActivity {
         deviceInfo.setObject(utils.getDeviceInfo());
 
      //   userStateApi();
-
+        if (firstLogin && loginTp.equals("")) {
+            Intent intent = new Intent(mContext , SignInActivity.class);
+            startActivity(intent);
+        }
 
 
     }

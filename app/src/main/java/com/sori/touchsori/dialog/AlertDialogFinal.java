@@ -1,6 +1,7 @@
 package com.sori.touchsori.dialog;
 
 
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Dialog;
 import android.app.PendingIntent;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -131,11 +133,20 @@ public class AlertDialogFinal extends BaseActivity {
 //        }
         // 엑티비티 종료
         unregisterLocationAlarm();
-       finish();
 
-        Intent intent = new Intent(this , IntroActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
+        if (BaseActivity.foregroundCount > 1)  {
+            Log.d(TAG ,"final popup ffff: : : :  ==== : : : : " + BaseActivity.foregroundCount);
+            finish();
+        }else {
+            Log.d(TAG ,"final popup iiii: : : :  ==== : : : : " + BaseActivity.foregroundCount);
+            Intent intent = new Intent(this , IntroActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+        }
+       //finish();
+
+
 
     }
 

@@ -74,7 +74,7 @@ public class EmergencyRecevier extends BroadcastReceiver {
 
             Locale systemLocale = mContext.getResources().getConfiguration().locale;
             String strLanguage = systemLocale.getLanguage();
-            MediaUtil.getInstance(mContext).soundStartFromFileResource(R.raw.emergencystart_ko, false, null);
+          //  MediaUtil.getInstance(mContext).soundStartFromFileResource(R.raw.emergencystart_ko, false, null);
 
 //            if(mApp.getConfig().getHeadsetPlug()) {
 //                mApp.onAlertDialog(mContext.getString(R.string.earphone_plug_msg), Gravity.LEFT);
@@ -200,23 +200,23 @@ public class EmergencyRecevier extends BroadcastReceiver {
      * EmergencyTime 시작 시 시작함을 소리로 알려준다.
      * 진동 등 설정이 된 소리가 나도록 변경 후 원상 복구한다.
      */
-    private void emergencyTimeStartPlaySound() {
-        final int orignRingerMode = DeviceUtil.getAudioRingerMode(mContext);
-        DeviceUtil.setAudioRingerMode(mContext, AudioManager.RINGER_MODE_NORMAL);
-        final int orignMusicStreamVolume = DeviceUtil.getStremMusicVolume(mContext);
-        DeviceUtil.setNormalStremMusicVolume(mContext);
-
-        MediaPlayer mediaPlayer = MediaPlayer.create(mContext, R.raw.emergencystart_ko);
-        mediaPlayer.setLooping(false);
-        mediaPlayer.start();
-
-        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                DeviceUtil.setAudioRingerMode(mContext, orignRingerMode);
-                DeviceUtil.setStremMusicVolume(mContext, orignMusicStreamVolume);
-            }
-        });
-    }
+//    private void emergencyTimeStartPlaySound() {
+//        final int orignRingerMode = DeviceUtil.getAudioRingerMode(mContext);
+//        DeviceUtil.setAudioRingerMode(mContext, AudioManager.RINGER_MODE_NORMAL);
+//        final int orignMusicStreamVolume = DeviceUtil.getStremMusicVolume(mContext);
+//        DeviceUtil.setNormalStremMusicVolume(mContext);
+//
+//        MediaPlayer mediaPlayer = MediaPlayer.create(mContext, R.raw.emergencystart_ko);
+//        mediaPlayer.setLooping(false);
+//        mediaPlayer.start();
+//
+//        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+//            @Override
+//            public void onCompletion(MediaPlayer mp) {
+//                DeviceUtil.setAudioRingerMode(mContext, orignRingerMode);
+//                DeviceUtil.setStremMusicVolume(mContext, orignMusicStreamVolume);
+//            }
+//        });
+//    }
 
 }

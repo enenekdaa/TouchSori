@@ -39,6 +39,8 @@ public class BaseActivity extends AppCompatActivity {
 
     public String loginToken;
 
+    public static int foregroundCount = 0; // 전역 count 변수
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -141,5 +143,17 @@ public class BaseActivity extends AppCompatActivity {
             return refreshToken;
         }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        foregroundCount = foregroundCount- 1;
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        foregroundCount = foregroundCount+ 1;
+
+    }
 }

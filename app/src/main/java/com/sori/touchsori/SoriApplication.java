@@ -2,9 +2,11 @@ package com.sori.touchsori;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.Application;
 import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -35,6 +37,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -72,7 +75,9 @@ public class SoriApplication extends Application {
     };
 
 
-    public static SoriApplication getInstance() {return soriApplication;}
+    public static SoriApplication getInstance() {
+        return soriApplication;
+    }
 
     @Override
     public void onCreate() {
@@ -81,7 +86,8 @@ public class SoriApplication extends Application {
         mContext = getApplicationContext();
         utils = new Utils(this);
         apiUtil = new ApiUtil(this);
-        TypefaceUtil.overrideFont(this , "SERIF" , "fonts/NanumSquare_acB.ttf");
+
+        TypefaceUtil.overrideFont(this, "SERIF", "fonts/NanumSquare_acB.ttf");
 
     }
 
@@ -103,6 +109,7 @@ public class SoriApplication extends Application {
 
     /**
      * 퍼미션 체크
+     *
      * @param activity
      * @param permission
      * @return
@@ -143,21 +150,17 @@ public class SoriApplication extends Application {
     }
 
     public void showMessage(String message) {
-        Toast.makeText(mContext , message , Toast.LENGTH_SHORT).show();
+        Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
     }
 
 
     public void onAlertDialog(String message) {
         Intent alertIntent = new Intent(this, AlertDialogFinal.class);
-        alertIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+        alertIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
         alertIntent.putExtra("message", message);
 
         startActivity(alertIntent);
     }
-
-
-
-
 
 
     /**
@@ -174,7 +177,6 @@ public class SoriApplication extends Application {
     }
 
 
-
     /**
      * 서비스 중지
      *
@@ -183,6 +185,7 @@ public class SoriApplication extends Application {
     public boolean getIsServiceStop() {
         return isServiceStop;
     }
+
     /**
      * 서비스 중지 설정
      */
@@ -193,6 +196,7 @@ public class SoriApplication extends Application {
 
     /**
      * 초기화 여부
+     *
      * @return
      */
     public boolean isInitialized() {
@@ -201,6 +205,7 @@ public class SoriApplication extends Application {
 
     /**
      * 초기화 여부
+     *
      * @return
      */
     public void setIsInitialized(boolean value) {
@@ -225,8 +230,10 @@ public class SoriApplication extends Application {
     public int getLocationCount() {
         return this.locationCount;
     }
+
     /**
      * SMS 메시지를 보내는 중인지 설정한다.
+     *
      * @param messageSending
      */
     public void setMessageSending(boolean messageSending) {
@@ -235,6 +242,7 @@ public class SoriApplication extends Application {
 
     /**
      * SMS 메시지를 보내는 중인지 가져온다.
+     *
      * @return
      */
     public boolean isMessageSending() {
@@ -243,8 +251,9 @@ public class SoriApplication extends Application {
 
     /**
      * 안심귀가 시간 체크
+     *
      * @param bStart
-     * @param checkIsSelected       emergency 설정에 selected된 것을 체크하는지 여부
+     * @param checkIsSelected emergency 설정에 selected된 것을 체크하는지 여부
      * @return
      */
     public boolean checkEmergencyTime(boolean bStart, boolean checkIsSelected) {
@@ -310,6 +319,7 @@ public class SoriApplication extends Application {
 
     // 재시작 ... 무한
     private PendingIntent pi_emergency_start;
+
     public void alarmForever() {
         Intent intent = new Intent(mContext, EmergencyRecevier.class);
         intent.setAction(Define.ACTION_EMERGENCY_TIME_START);
@@ -345,6 +355,7 @@ public class SoriApplication extends Application {
 
     /**
      * TouchSerivce를 시작한다.
+     *
      * @param tag
      */
     public void startTouchsoriService(String tag) {
@@ -352,15 +363,16 @@ public class SoriApplication extends Application {
 
         // 터치소리 설정 확인
 
-            // 터치소리 서비스 중지 해제
-            setIsServiceStop(false);
-            LogUtil.d(tag, "startTouchsoriService() -> getIsServiceStop() : " + getIsServiceStop());
+        // 터치소리 서비스 중지 해제
+        setIsServiceStop(false);
+        LogUtil.d(tag, "startTouchsoriService() -> getIsServiceStop() : " + getIsServiceStop());
 
         // 터치소리 서비스 시작
         Intent intent = new Intent(mContext, TouchService.class);
         intent.setAction(TOUCH_ACTION_EMERGNECY);
         intent.putExtra("start", Define.TOUCH_SERVICE_TYPE_START);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
             mContext.startForegroundService(intent);
         } else {
             mContext.startService(intent);
@@ -387,12 +399,13 @@ public class SoriApplication extends Application {
 //
 //                }
 
-        }
+    }
 
 
     ArrayList<ApiContactListData> sosList;
     ArrayList<String> nameList;
     ArrayList<String> numList;
+
     public void getContactsLoad() {
 
         try {
@@ -420,10 +433,10 @@ public class SoriApplication extends Application {
                             if (numList.size() != 0) {
                                 numList.clear();
                             }
-                            for (int i = 0 ; i < sosList.size() ; i++) {
+                            for (int i = 0; i < sosList.size(); i++) {
                                 nameList.add(sosList.get(i).getName());
                             }
-                            for (int i = 0 ; i < sosList.size() ; i++) {
+                            for (int i = 0; i < sosList.size(); i++) {
                                 numList.add(sosList.get(i).getPhone());
                             }
 
@@ -433,7 +446,7 @@ public class SoriApplication extends Application {
                             showMessage(e.getMessage());
                         }
 
-                    }else {
+                    } else {
                         try {
                             JSONObject jsonError = new JSONObject(response.errorBody().string());
                             String message = jsonError.getString("message");
@@ -458,5 +471,7 @@ public class SoriApplication extends Application {
             e.printStackTrace();
         }
     }
+
+
 
 }

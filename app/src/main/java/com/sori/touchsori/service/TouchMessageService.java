@@ -1,6 +1,9 @@
 package com.sori.touchsori.service;
 
 import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
@@ -16,11 +19,14 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.PowerManager;
+import android.support.v4.app.NotificationCompat;
 import android.telephony.SmsManager;
 import android.text.TextUtils;
 
+import com.sori.touchsori.MainActivity;
 import com.sori.touchsori.R;
 import com.sori.touchsori.SoriApplication;
+import com.sori.touchsori.intro.IntroActivity;
 import com.sori.touchsori.receiver.EmergencyRecevier;
 import com.sori.touchsori.utill.Define;
 import com.sori.touchsori.utill.EtcUtil;
@@ -41,10 +47,10 @@ import static com.sori.touchsori.utill.Define.MSG_SERVICE_ACTION_LOCATION;
 
 public class TouchMessageService extends Service {
     private static final String TAG = TouchMessageService.class.getSimpleName();   // 디버그 태그
-
+    public static final String CHANNEL_ID = "ForegroundServiceChannel";
     private Context mContext;
     private SoriApplication mApp;
-
+    MediaPlayer mediaPlayer;
     public TouchMessageService() {
     }
 
@@ -56,6 +62,7 @@ public class TouchMessageService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+
     }
 
     @Override
@@ -68,7 +75,7 @@ public class TouchMessageService extends Service {
         // 전역 (Application) 변수
         mApp = (SoriApplication) mContext;
 
-
+        startForegroundNotificationOn();
         // 터치소리 서비스 중지
         mApp.setIsServiceStop(true);
 
@@ -78,10 +85,11 @@ public class TouchMessageService extends Service {
         ArrayList<String> numList = mApp.utils.getSosList();
         int cnt = numList.size();
         LogUtil.d(TAG, "onStartCommand() -> cnt : " + cnt);
+        mediaPlayer = MediaPlayer.create(mContext, R.raw.siren);
         if (cnt > 0) {
 
             if (mApp.utils.getSiren().matches("on")) { // 사이렌 사용
-                MediaPlayer mediaPlayer = MediaPlayer.create(mContext, R.raw.siren);
+
                 mediaPlayer.setLooping(false);
                 mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                     @Override
@@ -152,7 +160,7 @@ public class TouchMessageService extends Service {
         @Override
         protected Boolean doInBackground(ArrayList<String>... params) {
             boolean isSuccess = false;
-            Looper.prepare();
+   //         Looper.prepare();
             try {
                 LocationInfo mLocation = LocationInfo.getInstance(mContext);
                 Location location = mLocation.getCurrentLocation();
@@ -186,8 +194,14 @@ public class TouchMessageService extends Service {
             if (mApp.getLocationCount() != -1) {
                 if (result.equals(true)) {
                     mApp.onAlertDialog("위치 전송이 발송되었습니다.");
+                    if (mediaPlayer.isPlaying()) {
+                        mediaPlayer.stop();
+                    }
                 }else {
                     mApp.onAlertDialog("위치 전송이 실패하였습니다.");
+                    if (mediaPlayer.isPlaying()) {
+                        mediaPlayer.stop();
+                    }
                 }
                 Intent locationIntent = new Intent(mContext, LocationService.class);
                 mContext.startService(locationIntent);
@@ -348,8 +362,86 @@ public class TouchMessageService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+
     }
 
 
+
+    /**
+     * 서비스 시작 Notification
+     */
+    public void startForegroundNotificationOn() {
+
+        // 모니터링 서비스  노티피케이션 취소
+//        ServiceUtil serviceUtil = new ServiceUtil();
+//        serviceUtil.stopMonitorService(mContext);
+
+        Intent notificationIntent = new Intent(this, IntroActivity.class);
+        PendingIntent notificationPendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+
+
+        NotificationCompat.Builder builder;
+        if (Build.VERSION.SDK_INT >= 26) {
+            String CHANNEL_ID = "service_channel";
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
+                    "_service_channel",
+                    NotificationManager.IMPORTANCE_MIN);
+
+            channel.setSound(null, null);
+            channel.setShowBadge(false);
+            ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE))
+                    .createNotificationChannel(channel);
+
+            builder = new NotificationCompat.Builder(this, CHANNEL_ID);
+        } else {
+            builder = new NotificationCompat.Builder(this);
+        }
+
+        builder.setSmallIcon(R.mipmap.ic_launcher)
+
+                .setContentTitle(getString(R.string.app_name)).setPriority(Notification.PRIORITY_MIN)
+                .setGroup(Define.NOTIFICATION_ID_FOREGROUND_GROUP_KEY)
+                .setContentText("터치소리 실행중입니다.")
+                .setContentIntent(notificationPendingIntent).build();
+
+        startForeground(Define.NOTIFICATION_ID_FOREGROUND_SERVICE, builder.build());
+    }
+
+    /**
+     * 서비스 중지 Notification
+     */
+    public void startForegroundNotificationOff() {
+        // 모니터링 서비스  노티피케이션 취소
+//        ServiceUtil serviceUtil = new ServiceUtil();
+//        serviceUtil.stopMonitorService(mContext);
+
+        Intent notificationIntent = new Intent(this, IntroActivity.class);
+        PendingIntent notificationPendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+
+        NotificationCompat.Builder builder;
+        if (Build.VERSION.SDK_INT >= 26) {
+            String CHANNEL_ID = "service_channel";
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
+                    "_service_channel",
+                    NotificationManager.IMPORTANCE_MIN);
+
+            channel.setSound(null, null);
+            channel.setShowBadge(false);
+            ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE))
+                    .createNotificationChannel(channel);
+
+            builder = new NotificationCompat.Builder(this, CHANNEL_ID);
+        } else {
+            builder = new NotificationCompat.Builder(this);
+        }
+
+        builder.setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle(getString(R.string.app_name)).setPriority(Notification.PRIORITY_MIN)
+                .setGroup(Define.NOTIFICATION_ID_FOREGROUND_GROUP_KEY)
+                .setContentText("stop..")
+                .setContentIntent(notificationPendingIntent).build();
+
+        startForeground(Define.NOTIFICATION_ID_FOREGROUND_SERVICE, builder.build());
+    }
 
 }

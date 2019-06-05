@@ -1,5 +1,6 @@
 package com.sori.touchsori.service;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -14,6 +15,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.ContentObserver;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.hardware.camera2.CameraManager;
 import android.net.Uri;
 import android.os.Build;
@@ -23,7 +25,10 @@ import android.os.PowerManager;
 import android.provider.MediaStore;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
+import android.widget.RemoteViews;
+import android.widget.TextView;
 
+import com.sori.touchsori.MainActivity;
 import com.sori.touchsori.R;
 import com.sori.touchsori.SoriApplication;
 import com.sori.touchsori.intro.IntroActivity;
@@ -36,6 +41,7 @@ import java.util.Calendar;
 
 
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
+import static com.sori.touchsori.service.TouchMessageService.CHANNEL_ID;
 import static com.sori.touchsori.utill.Define.MONITOR_SERVICE_START;
 import static com.sori.touchsori.utill.Define.MONITOR_SERVICE_STOP;
 import static com.sori.touchsori.utill.Define.TOUCH_ACTION_EMERGNECY;
@@ -77,6 +83,8 @@ public class MonitorService extends Service {
         screenReceiver = new ScreenRecevier();
         mContext.registerReceiver(screenReceiver, screenFilter);
 
+        startForegroundNotificationOn();
+
 
 
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { // 마시멜로우 (Ver.6.0)
@@ -99,7 +107,7 @@ public class MonitorService extends Service {
         // 안심귀가 설정 여부
 
       ///   안심귀가 시작 시간 알람 등록
-      //  mApp.alarmForever();
+        mApp.alarmForever();
 
         // 안심귀가 종료 시간 알람 등록
         //     mApp.registerEmergencyEndAlarm();
@@ -218,9 +226,9 @@ public class MonitorService extends Service {
 
         NotificationCompat.Builder builder;
         if (Build.VERSION.SDK_INT >= 26) {
-            String CHANNEL_ID = "monitor_service_channel";
+            String CHANNEL_ID = "service_channel";
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
-                    "Monitor Service Channel",
+                    "_service_channel",
                     NotificationManager.IMPORTANCE_LOW);
 
             ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE))
@@ -248,4 +256,84 @@ public class MonitorService extends Service {
 
         stopForeground(true);
     }
+
+
+    /**
+     * 서비스 시작 Notification
+     */
+    public void startForegroundNotificationOn() {
+
+        // 모니터링 서비스  노티피케이션 취소
+//        ServiceUtil serviceUtil = new ServiceUtil();
+//        serviceUtil.stopMonitorService(mContext);
+
+        Intent notificationIntent = new Intent(this, IntroActivity.class);
+        PendingIntent notificationPendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+
+
+        NotificationCompat.Builder builder;
+        if (Build.VERSION.SDK_INT >= 26) {
+            String CHANNEL_ID = "service_channel";
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
+                    "_service_channel",
+                    NotificationManager.IMPORTANCE_MIN);
+
+            channel.setSound(null, null);
+            channel.setShowBadge(false);
+            ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE))
+                    .createNotificationChannel(channel);
+
+            builder = new NotificationCompat.Builder(this, CHANNEL_ID);
+        } else {
+            builder = new NotificationCompat.Builder(this);
+        }
+
+        builder.setSmallIcon(R.mipmap.ic_launcher)
+
+                .setContentTitle(getString(R.string.app_name)).setPriority(Notification.PRIORITY_MIN)
+                .setGroup(Define.NOTIFICATION_ID_FOREGROUND_GROUP_KEY)
+                .setContentText("터치소리 실행중입니다.")
+                .setContentIntent(notificationPendingIntent).build();
+
+        startForeground(Define.NOTIFICATION_ID_FOREGROUND_SERVICE, builder.build());
+    }
+
+    /**
+     * 서비스 중지 Notification
+     */
+    public void startForegroundNotificationOff() {
+        // 모니터링 서비스  노티피케이션 취소
+//        ServiceUtil serviceUtil = new ServiceUtil();
+//        serviceUtil.stopMonitorService(mContext);
+
+        Intent notificationIntent = new Intent(this, IntroActivity.class);
+        PendingIntent notificationPendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+
+        NotificationCompat.Builder builder;
+        if (Build.VERSION.SDK_INT >= 26) {
+            String CHANNEL_ID = "service_channel";
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
+                    "_service_channel",
+                    NotificationManager.IMPORTANCE_MIN);
+
+            channel.setSound(null, null);
+            channel.setShowBadge(false);
+            ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE))
+                    .createNotificationChannel(channel);
+
+            builder = new NotificationCompat.Builder(this, CHANNEL_ID);
+        } else {
+            builder = new NotificationCompat.Builder(this);
+        }
+
+        builder.setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle(getString(R.string.app_name)).setPriority(Notification.PRIORITY_MIN)
+                .setGroup(Define.NOTIFICATION_ID_FOREGROUND_GROUP_KEY)
+                .setContentText("stop..")
+                .setContentIntent(notificationPendingIntent).build();
+
+        startForeground(Define.NOTIFICATION_ID_FOREGROUND_SERVICE, builder.build());
+    }
 }
+
+
