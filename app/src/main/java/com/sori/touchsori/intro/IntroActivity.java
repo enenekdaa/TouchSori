@@ -102,6 +102,7 @@ public class IntroActivity extends BaseActivity {
                     soriApplication.setIsInitialized(true);
                     soriApplication.setIsSoundPaserStop(false);
                 }else {
+                    utils.saveAlaramStatus("off");
                     serviceUtil.stopMonitorService(mContext);
                     soriApplication.setIsInitialized(false);
                     soriApplication.setIsSoundPaserStop(true);
@@ -132,8 +133,11 @@ public class IntroActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (firstLogin) {
+        if (firstLogin && !deviceId.equals("")) {
             serialRegist();
+        }else if (firstLogin && deviceId.equals("")){
+        }else {
+            finish();
         }
     }
 
@@ -358,7 +362,7 @@ public class IntroActivity extends BaseActivity {
             data.put(KEY_MODE, "insert");
             data.put(KEY_HP, hp);
             data.put(KEY_COUNTRY_CODE, CountryISOUtil.getSIMCountryCode(mContext));
-            serialNumber = "A03697R17";      //deviceObj.get("deviceId").getAsString()
+            serialNumber = deviceObj.get("serialNo").getAsString();
             serialNumber = serialNumber.trim();
             data.put(KEY_SERIAL_NUMBER, serialNumber);
             LogUtil.d(TAG, "RequestInsertSerialThread() -> serialNumber : " + serialNumber.length());

@@ -40,7 +40,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         mainSettingImg.setOnClickListener(this);
 
         String serial = utils.getSerialNumber();
-
+        if (utils.getSiren().equals("on")) {
+        }else {
+            utils.saveSiren("off");
+        }
         boolean serialBoolean = utils.isRegistrated();
         LogUtil.d(": : : : : " , serial + " //////////////////////// " + serialBoolean);
     }

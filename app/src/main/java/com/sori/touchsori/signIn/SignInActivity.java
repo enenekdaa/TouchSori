@@ -178,17 +178,25 @@ public class SignInActivity extends BaseActivity implements View.OnClickListener
                     if (response.isSuccessful()) {
                         String deviceId = response.body().getDeviceId();
                         utils.setDeviceID(deviceId);
+                        utils.setSerialNumber(deviceObj.get("serialNo").getAsString());
                         utils.setIsFirstLogin(true);
                         mCustomMainDialog.dismiss();
                         finish();
                     } else {
                         try {
                             JSONObject jsonError = new JSONObject(response.errorBody().string());
+                            String code = jsonError.getString("code");
                             message = jsonError.getString("message");
-                            showMessage(message);
+
                             mCustomMainDialog.dismiss();
                          //   System.exit(0);
-                            finish();
+                            if (code.equals("5802")) {
+                                showMessage(message);
+
+                            }else {
+                                finish();
+                            }
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         } catch (IOException e) {
