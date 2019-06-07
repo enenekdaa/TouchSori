@@ -133,11 +133,16 @@ public class IntroActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        loginTp = utils.getLoginToken();
+        deviceId = utils.getDeviceID();
         if (firstLogin && !deviceId.equals("")) {
             serialRegist();
         }else if (firstLogin && deviceId.equals("")){
         }else {
-            finish();
+            if (!firstLogin) {
+            }else {
+                finish();
+            }
         }
     }
 
@@ -288,10 +293,22 @@ public class IntroActivity extends BaseActivity {
                         try {
                             JSONObject jsonError = new JSONObject(response.errorBody().string());
                             message = jsonError.getString("message");
-                            showMessage(message);
+                            String code = jsonError.getString("code");
 
-                            System.exit(0);
-                            finish();
+                            if (code.equals("1005")) {
+                                showMessage(message + "\n 관리자에게 문의해주세요.");
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        System.exit(0);
+                                        finish();
+                                    }
+                                },3000);
+                            }else {
+                                System.exit(0);
+                                finish();
+                            }
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         } catch (IOException e) {
@@ -362,7 +379,7 @@ public class IntroActivity extends BaseActivity {
             data.put(KEY_MODE, "insert");
             data.put(KEY_HP, hp);
             data.put(KEY_COUNTRY_CODE, CountryISOUtil.getSIMCountryCode(mContext));
-            serialNumber = deviceObj.get("serialNo").getAsString();
+            serialNumber = utils.getSerialNumber();
             serialNumber = serialNumber.trim();
             data.put(KEY_SERIAL_NUMBER, serialNumber);
             LogUtil.d(TAG, "RequestInsertSerialThread() -> serialNumber : " + serialNumber.length());

@@ -274,6 +274,7 @@ public class TouchService extends Service {
                 // 전역 (Application) 변수
                 if (mApp == null) mApp = (SoriApplication) mContext;
 
+
                 switch(type) {
                     case Define.TOUCH_SERVICE_TYPE_START:
                         resqutParser(SOUND_PARSE_HANDLE_EVENT_START, PARSE_TYPE_EMERGENCY);
