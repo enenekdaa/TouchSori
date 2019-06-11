@@ -5,19 +5,20 @@ import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Dialog;
 import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
+import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.LinearLayout;
+
 import android.widget.TextView;
 
 import com.sori.touchsori.R;
@@ -26,8 +27,11 @@ import com.sori.touchsori.base.BaseActivity;
 import com.sori.touchsori.callback.CallbackAlert;
 import com.sori.touchsori.intro.IntroActivity;
 import com.sori.touchsori.receiver.EmergencyRecevier;
+import com.sori.touchsori.service.TouchMessageService;
 import com.sori.touchsori.utill.Define;
 import com.sori.touchsori.utill.LogUtil;
+
+import java.io.IOException;
 
 import static com.sori.touchsori.utill.Define.ALARM_ID_SEND_LOCATION;
 
@@ -44,6 +48,8 @@ public class AlertDialogFinal extends BaseActivity {
     private  String message;                                                        // 메시지
     private SoriApplication mApp;                                              // 전역 (Application) 변수
     private Context mContext;                                                   // 콘텍스트
+
+    private TouchMessageService mTouchMessageService;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -101,6 +107,47 @@ public class AlertDialogFinal extends BaseActivity {
         };
     }
 
+
+
+    private ServiceConnection mConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            TouchMessageService.TouchServiceBinder mBinder = (TouchMessageService.TouchServiceBinder) service;
+            mTouchMessageService = mBinder.getService();
+            mTouchMessageService.registerCallback(mICallback);
+            mTouchMessageService.stopSirenCall();
+
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            mTouchMessageService = null;
+        }
+    };
+
+    private TouchMessageService.ICallback mICallback = new TouchMessageService.ICallback() {
+        @Override
+        public void stopSiren(MediaPlayer mediaPlayer) {
+            mediaPlayer.stop();
+            try {
+                mediaPlayer.prepare();
+            }catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    };
+    Intent service;
+    public void startTouchServiceBind() {
+        service = new Intent(this , TouchMessageService.class);
+        bindService(service , mConnection , Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindService(mConnection);
+    }
+
     /**
      * 확인버튼
      * @param v
@@ -133,6 +180,8 @@ public class AlertDialogFinal extends BaseActivity {
 //        }
         // 엑티비티 종료
         unregisterLocationAlarm();
+        startTouchServiceBind();
+
 
         if (BaseActivity.foregroundCount > 1)  {
             Log.d(TAG ,"final popup ffff: : : :  ==== : : : : " + BaseActivity.foregroundCount);
@@ -144,9 +193,8 @@ public class AlertDialogFinal extends BaseActivity {
             startActivity(intent);
             finish();
         }
+
        //finish();
-
-
 
     }
 

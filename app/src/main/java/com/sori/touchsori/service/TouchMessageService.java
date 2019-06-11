@@ -13,6 +13,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
+import android.os.Binder;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
@@ -26,6 +27,7 @@ import android.text.TextUtils;
 import com.sori.touchsori.MainActivity;
 import com.sori.touchsori.R;
 import com.sori.touchsori.SoriApplication;
+import com.sori.touchsori.base.BaseActivity;
 import com.sori.touchsori.intro.IntroActivity;
 import com.sori.touchsori.receiver.EmergencyRecevier;
 import com.sori.touchsori.utill.Define;
@@ -33,6 +35,7 @@ import com.sori.touchsori.utill.EtcUtil;
 import com.sori.touchsori.utill.LocationInfo;
 import com.sori.touchsori.utill.LocationUtil;
 import com.sori.touchsori.utill.LogUtil;
+import com.sori.touchsori.utill.Utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,20 +53,52 @@ public class TouchMessageService extends Service {
     public static final String CHANNEL_ID = "ForegroundServiceChannel";
     private Context mContext;
     private SoriApplication mApp;
-    MediaPlayer mediaPlayer;
+    public static MediaPlayer mediaPlayer;
+
+    private final IBinder mBinder = new TouchServiceBinder();
+    private ICallback mICallback;
+
     public TouchMessageService() {
     }
 
+    //콜백 인터페이스 선언
+    public interface ICallback {
+        public void stopSiren(MediaPlayer mediaPlayer); //액티비티에서 선언한 콜백 함수.
+    }
+
+    public class TouchServiceBinder extends Binder {
+        public TouchMessageService getService() {
+            return TouchMessageService.this;
+        }
+    }
+
+    public void registerCallback(ICallback cb) {
+        mICallback = cb;
+    }
+
+    public void stopSirenCall() {
+        mICallback.stopSiren(mediaPlayer);
+    }
+
+
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        return mBinder;
     }
+
+
 
     @Override
     public void onCreate() {
         super.onCreate();
+        mContext = getApplicationContext();
+        if (mediaPlayer == null) {
+            mediaPlayer = MediaPlayer.create(mContext, R.raw.siren);
+
+        }
 
     }
+
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -71,7 +106,7 @@ public class TouchMessageService extends Service {
         LogUtil.d(TAG, "onStartCommand() -> action :" + action);
 
         // 콘텍스트
-        mContext = getApplicationContext();
+
         // 전역 (Application) 변수
         mApp = (SoriApplication) mContext;
 
@@ -85,7 +120,7 @@ public class TouchMessageService extends Service {
         ArrayList<String> numList = mApp.utils.getSosList();
         int cnt = numList.size();
         LogUtil.d(TAG, "onStartCommand() -> cnt : " + cnt);
-        mediaPlayer = MediaPlayer.create(mContext, R.raw.siren);
+
         if (cnt > 0) {
 
             if (mApp.utils.getSiren().matches("on")) { // 사이렌 사용
@@ -160,8 +195,13 @@ public class TouchMessageService extends Service {
         @Override
         protected Boolean doInBackground(ArrayList<String>... params) {
             boolean isSuccess = false;
-   //         Looper.prepare();
+
+
             try {
+                if (Looper.myLooper() == null) {
+                    Looper.prepare();
+                }
+
                 LocationInfo mLocation = LocationInfo.getInstance(mContext);
                 Location location = mLocation.getCurrentLocation();
                 String address = getAddress(location);
@@ -194,14 +234,8 @@ public class TouchMessageService extends Service {
             if (mApp.getLocationCount() != -1) {
                 if (result.equals(true)) {
                     mApp.onAlertDialog("위치 전송이 발송되었습니다.");
-                    if (mediaPlayer.isPlaying()) {
-                        mediaPlayer.stop();
-                    }
                 }else {
                     mApp.onAlertDialog("위치 전송이 실패하였습니다.");
-                    if (mediaPlayer.isPlaying()) {
-                        mediaPlayer.stop();
-                    }
                 }
                 Intent locationIntent = new Intent(mContext, LocationService.class);
                 mContext.startService(locationIntent);
@@ -256,7 +290,6 @@ public class TouchMessageService extends Service {
         }
         return ret_val.trim();
     }
-
 
     /**
      * SMS 전송

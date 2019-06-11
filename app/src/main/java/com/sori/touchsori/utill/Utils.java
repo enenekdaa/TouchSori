@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Point;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.util.Log;
 import android.view.Display;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.sori.touchsori.R;
 import com.sori.touchsori.api.ApiUtil;
 import com.sori.touchsori.base.BaseActivity;
 import com.sori.touchsori.data.ApiAuthorizationData;
@@ -65,9 +67,6 @@ public class Utils {
         String deviceID = sharedPreferences.getString("deviceID", "");
         return deviceID;
     }
-
-
-
 
     public void setDeviceInfo(String deviceInfo) {
         editor.putString("deviceInfo", deviceInfo);
