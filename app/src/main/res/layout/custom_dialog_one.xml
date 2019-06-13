@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="top|center"
         android:layout_marginTop="34dp"
+        android:textSize="18sp"
         android:maxLines="1"
         android:text="위치기반 서비스 이용약관" />
 
@@ -23,6 +24,7 @@
         android:layout_gravity="center"
         android:maxLines="10"
         android:ellipsize="end"
+        android:textSize="13sp"
         android:text="제 1조.." />
 
     <LinearLayout
@@ -37,6 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:padding="15dp"
+            android:textSize="16sp"
             android:gravity="center"
             android:background="@drawable/border_gray"
             android:textColor="@color/bolder_text"

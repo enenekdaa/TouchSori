@@ -87,7 +87,7 @@ public class SoriApplication extends Application {
         utils = new Utils(this);
         apiUtil = new ApiUtil(this);
 
-        TypefaceUtil.overrideFont(this, "SERIF", "fonts/NanumSquare_acB.ttf");
+
 
     }
 

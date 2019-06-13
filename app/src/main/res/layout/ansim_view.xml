@@ -32,6 +32,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:textSize="13sp"
+            android:lineSpacingExtra="3dp"
             android:text="@string/ansim_title" />
     </LinearLayout>
 
@@ -75,7 +77,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_margin="10dp"
-                    android:textSize="33dp"
+                    android:textSize="30dp"
                     android:textStyle="bold"
                     android:textColor="@color/black"
                     android:text="24시간" />
@@ -195,6 +197,7 @@
                     android:layout_alignParentLeft="true"
                     android:buttonTint="@color/bolder_text"
                     android:padding="10dp"
+                    android:textSize="13sp"
                     android:text="사이렌" />
 
                 <TextView
@@ -209,7 +212,7 @@
                     android:text="@string/ansim_plus_setting"
                     android:textColor="@color/white"
                     android:hint="@string/btn_done"
-                    android:textSize="14sp"
+                    android:textSize="13sp"
                     android:textStyle="bold" />
 
             </RelativeLayout>

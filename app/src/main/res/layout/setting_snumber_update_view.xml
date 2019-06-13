@@ -25,6 +25,7 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/img_logo_big"
                 android:adjustViewBounds="true"
+                android:scaleType="centerInside"
                 android:layout_gravity="center"/>
 
         </LinearLayout>
@@ -44,7 +45,7 @@
             android:maxLines="1"
             android:textColor="@color/black"
             android:textColorHint="@color/bolder_text"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:inputType="text"
             android:textStyle="bold" />
 
@@ -60,7 +61,7 @@
             android:text="@string/btn_done"
             android:textColor="@color/white"
             android:hint="@string/btn_done"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textStyle="bold" />
 
     </LinearLayout>

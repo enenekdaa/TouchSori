@@ -16,6 +16,7 @@ import com.sori.touchsori.api.ApiUtil;
 import com.sori.touchsori.data.ApiAuthorizationData;
 import com.sori.touchsori.signIn.DeviceInfo;
 import com.sori.touchsori.signIn.SignInActivity;
+import com.sori.touchsori.utill.TypefaceUtil;
 import com.sori.touchsori.utill.Utils;
 
 import org.json.JSONException;
@@ -64,6 +65,8 @@ public class BaseActivity extends AppCompatActivity {
         if (loginToken == null && loginToken.matches("") && deviceObj != null) {
             refreshToken();
         }
+
+        TypefaceUtil.overrideFont(mContext, "SERIF", "fonts/NanumSquare_acB.ttf");
 //테스트 test
 //        deviceObj.addProperty("serialNo" , "A03697R17");
 //        String test = "A03697R63";

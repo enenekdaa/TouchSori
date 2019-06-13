@@ -12,6 +12,7 @@
         android:layout_gravity="top|center"
         android:layout_marginTop="34dp"
         android:maxLines="1"
+        android:textSize="18sp"
         android:text="위치기반 서비스 이용약관" />
 
 
@@ -28,6 +29,7 @@
             android:layout_weight="1"
             android:padding="15dp"
             android:gravity="center"
+            android:textSize="16sp"
             android:background="@drawable/border_gray"
             android:textColor="@color/bolder_text"
             android:text="닫기"/>
@@ -39,6 +41,7 @@
             android:layout_weight="1"
             android:padding="15dp"
             android:gravity="center"
+            android:textSize="16sp"
             android:background="@drawable/border_gray"
             android:textColor="@color/bolder_text"
             android:text="삭제"/>
@@ -51,6 +54,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/border_gray"
+            android:textSize="16sp"
             android:textColor="@color/bolder_text"
             android:text="수정"/>
 

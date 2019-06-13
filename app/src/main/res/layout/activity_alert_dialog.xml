@@ -32,7 +32,7 @@
             android:lines="1"
             android:gravity="center"
             android:textColor="@color/text_color"
-            android:textSize="16sp"
+            android:textSize="13dp"
             android:text="긴급 위치 문자를 전송하였습니다."
             android:padding="25dp"
             tools:ignore="ObsoleteLayoutParam" />
@@ -55,7 +55,7 @@
             android:onClick="onConfirm"
             android:text="확인"
             android:textColor="@color/bolder_text"
-            android:textSize="18sp"
+            android:textSize="16sp"
             tools:ignore="ObsoleteLayoutParam" />
     </LinearLayout>
 </RelativeLayout>

@@ -287,6 +287,7 @@ public class IntroActivity extends BaseActivity {
 
                         Intent intent = new Intent(IntroActivity.this , MainActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         goMainAct(intent);
                     }else{
 //                        Intent intent = new Intent(IntroActivity.this , SignInActivity.class);

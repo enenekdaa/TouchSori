@@ -25,8 +25,9 @@
                 android:layout_width="120dp"
                 android:layout_height="185dp"
                 android:adjustViewBounds="true"
+                android:scaleType="centerInside"
                 android:layout_gravity="center"
-                android:src="@drawable/img_logo_medium" />
+                android:src="@drawable/img_logo_big" />
         </LinearLayout>
 
 
@@ -64,7 +65,7 @@
                         android:maxLines="1"
                         android:textColor="@color/gray"
                         android:textColorHint="@color/bolder_text"
-                        android:textSize="18sp"
+                        android:textSize="16sp"
                         android:inputType="number"
                         android:hint="@string/phone_number_insert"
                         android:textStyle="bold" />
@@ -92,7 +93,7 @@
                         android:textColor="@color/bolder_text"
                         android:hint="@string/serial_number_insert"
                         android:textColorHint="@color/bolder_text"
-                        android:textSize="18sp"
+                        android:textSize="16sp"
                         android:textStyle="bold" />
                 </LinearLayout>
 
@@ -115,7 +116,7 @@
                         android:text="@string/btn_done"
                         android:textColor="@color/white"
                         android:hint="@string/btn_done"
-                        android:textSize="18sp"
+                        android:textSize="16sp"
                         android:textStyle="bold" />
 
                     <!-- 개인정보 취급 방침 -->
@@ -127,6 +128,7 @@
                         android:clickable="true"
                         android:gravity="center_horizontal"
                         android:text="@string/policy"
+                        android:textSize="14sp"
                         android:textColor="@color/text_color"
                         android:textStyle="bold" />
                 </LinearLayout>
