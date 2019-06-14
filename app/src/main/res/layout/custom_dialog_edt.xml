@@ -45,6 +45,7 @@
                 android:inputType="text"
                 android:imeOptions="actionNext"
                 android:layout_margin="5dp"
+                android:textSize="13sp"
                 android:padding="10dp"
                 android:hint="이름"/>
 
@@ -56,6 +57,7 @@
                 android:maxLength="12"
                 android:layout_margin="5dp"
                 android:inputType="phone"
+                android:textSize="13sp"
                 android:padding="10dp"
                 android:hint="휴대전화"/>
 
