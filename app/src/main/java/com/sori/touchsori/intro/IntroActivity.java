@@ -182,11 +182,12 @@ public class IntroActivity extends BaseActivity {
 
     private void initView() {
         tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        deviceObj.addProperty("phoneNo" , "01041381724");
+        // deviceObj.addProperty("phoneNo" , "01041381724");
+        deviceObj.addProperty("phoneNo" , tm.getLine1Number());
         //  deviceObj.addProperty("phoneNo" , phoneNumber);
         deviceObj.addProperty("deviceName" , Build.DISPLAY);
         deviceObj.addProperty("maker" , Build.MANUFACTURER);
-        deviceObj.addProperty("imei" ,"355239080979466");
+        deviceObj.addProperty("imei" ,tm.getDeviceId());
         //  deviceObj.addProperty("imei" , tm.getDeviceId());
         deviceObj.addProperty("version" , tm.getDeviceSoftwareVersion());
         deviceObj.addProperty("iccid" , "iccid" );

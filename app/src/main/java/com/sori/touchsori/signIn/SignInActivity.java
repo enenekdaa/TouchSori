@@ -194,6 +194,7 @@ public class SignInActivity extends BaseActivity implements View.OnClickListener
                                 showMessage(message);
 
                             }else {
+                                showMessage(message);
                                 finish();
                             }
 
