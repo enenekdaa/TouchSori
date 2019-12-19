@@ -65,7 +65,7 @@ public class ApiUtil {
 
     Context context;
     ApiService apiService;
-    String serviceId = "pp";
+    String serviceId = "07pp";
     Utils utils;
     String deviceID, loginToken;
 

@@ -29,24 +29,24 @@ public interface ApiService {
 
 
     // 로그인
-    @Headers({"Content-Type:application/json" ,   "serviceId:pp" , "appKey:test"})
+    @Headers({"Content-Type:application/json" ,   "serviceId:07pp" , "appKey:89a85c6e1342e22c123d46687c2a43a38af27cfe93d02feea1fcfde7e4784dc2"})
     @POST("/auth/v1/pp/login")
     Call<ApiAuthorizationData> loginPost(@Body Map<String , String> temp_map);
 
     // 토큰갱신
-    @Headers({"Content-Type:application/json" ,  "serviceId:pp" , "appKey:test"})
+    @Headers({"Content-Type:application/json" ,  "serviceId:07pp" , "appKey:89a85c6e1342e22c123d46687c2a43a38af27cfe93d02feea1fcfde7e4784dc2"})
     @POST("/auth/v1/pp/refresh-token")
     Call<ApiAuthorizationData> refreshTokenPost(@Header("authorization") String authorization , @Header("uid") String uid);
 
 
     // 비회원 등록
-    @Headers({"Content-Type:application/json" , "appKey:test"})
+    @Headers({"Content-Type:application/json" , "appKey:89a85c6e1342e22c123d46687c2a43a38af27cfe93d02feea1fcfde7e4784dc2"})
     @POST("/safecity-api-develop/v1/pp/things/devices/autojoin")
     Call<ApiDeviceData> deviceAdd(@Body Map<String , String > temp_map);
 
 
     // 현재위치 조회 3
-    @Headers({"Content-Type:application/json" , "appKey:test"})
+    @Headers({"Content-Type:application/json" , "appKey:89a85c6e1342e22c123d46687c2a43a38af27cfe93d02feea1fcfde7e4784dc2"})
     //@POST("/v1/pp/devices/{deviceId}/location/current/request")
     @POST("/safecity-api-develop/v1/pp/devices/{deviceId}/location/current/request")
     Call<Void> locationLoad3(@Header("authorization") String authorization , @Path("deviceId") String deviceId , @Body Map<String , String > temp_map);
@@ -58,22 +58,22 @@ public interface ApiService {
 //
 
     // 일반 연락처 추가
-    @Headers({"Content-Type: application/json" ,  "serviceId:pp" , "appKey:test"})
+    @Headers({"Content-Type: application/json" ,  "serviceId:07pp" , "appKey:89a85c6e1342e22c123d46687c2a43a38af27cfe93d02feea1fcfde7e4784dc2"})
     @POST("/safecity-api-develop/v1/pp/devices/{deviceId}/contacts/general/add")
     Call<Void> addContacts(@Path("deviceId") String deviceId , @Header("authorization") String authorization , @Body Map<String , String> temp_map);
 
     // 일반 연락처 조회
-    @Headers({"Content-Type: application/json" ,  "serviceId:pp" , "appKey:test"})
+    @Headers({"Content-Type: application/json" ,  "serviceId:07pp" , "appKey:89a85c6e1342e22c123d46687c2a43a38af27cfe93d02feea1fcfde7e4784dc2"})
     @GET("/safecity-api-develop/v1/pp/devices/{deviceId}/contacts/general/load")
     Call<ApiContactsData> getContacts(@Path("deviceId") String deviceId , @Header("authorization") String authorization);
 
     // 일반 연락처 삭제
-    @Headers({"Content-Type: application/json" , "serviceId:pp" , "appKey:test"})
+    @Headers({"Content-Type: application/json" , "serviceId:07pp" , "appKey:89a85c6e1342e22c123d46687c2a43a38af27cfe93d02feea1fcfde7e4784dc2"})
     @POST("/safecity-api-develop/v1/pp/devices/{deviceId}/contacts/general/remove")
     Call<Void> deleteContacts(@Path("deviceId") String deviceId , @Header("authorization") String authorization , @Body Map<String , String> temp_map);
 
     //연락처 수정
-    @Headers({"Content-Type:application/json" ,  "serviceId:pp" , "appKey:test"})
+    @Headers({"Content-Type:application/json" ,  "serviceId:07pp" , "appKey:89a85c6e1342e22c123d46687c2a43a38af27cfe93d02feea1fcfde7e4784dc2"})
     @POST("/safecity-api-develop/v1/pp/devices/{deviceId}/contacts/general/modify")
     Call<ApiDefault> updateAddress(@Header("authorization") String authorization , @Body Map<String , String> temp_map);
 //
@@ -106,12 +106,12 @@ public interface ApiService {
 //    Call<ApiDefault> updateAlarmSetting(@Header("authorization") String authorization , @Body Map<String , String> temp_map);
 
     //싸이렌 동작 설정 저장
-    @Headers({"Content-Type:application/json" , "serviceId:pp" , "appKey:test"})
+    @Headers({"Content-Type:application/json" , "serviceId:07pp" , "appKey:89a85c6e1342e22c123d46687c2a43a38af27cfe93d02feea1fcfde7e4784dc2"})
     @POST("/safecity-api-develop/v1/pp/devices/{deviceId}/settings/sos/siren/save")
     Call<ApiSirenLoadData> sirenSettingSave(@Path("deviceId") String deviceId ,@Header("authorization") String authorization , @Body Map<String , String> temp_map);
 
     //싸이렌 동작 설정 조회
-    @Headers({"Content-Type:application/json" , "serviceId:pp" , "appKey:test"})
+    @Headers({"Content-Type:application/json" , "serviceId:07pp" , "appKey:89a85c6e1342e22c123d46687c2a43a38af27cfe93d02feea1fcfde7e4784dc2"})
     @GET("/safecity-api-develop/v1/pp/devices/{deviceId}/settings/sos/siren/load")
     Call<ApiSirenLoadData> sirenSettingLoad(@Path("deviceId") String deviceId , @Header("authorization") String authorization , @QueryMap Map<String , String> temp_map);
 
